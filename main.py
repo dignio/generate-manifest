@@ -1,38 +1,23 @@
-import os
 import datetime
+import os
+from distutils.util import strtobool
 
 from cdk8s import App
 
 from manifests.generate import GenerateManifest
 
 
-def cli_string_bool_conversion(string_bool: str) -> bool:
-    """Convert string bool to bool
-
-    Args:
-        string_bool (str): The string "true" or "false"
-
-    Returns:
-        bool: The returning bool True or False
-    """
-    raw = string_bool.lower()
-
-    if raw == "true":
-        return True
-
-    return False
-
-
 def main():
-    """
-    Get the environment variables defined by the action.
-    """
+    """Generate a Kubernetes manifest for a requested service."""
+    # Mandatory attributes
     name = os.getenv("app_name", "")
-    namespace = os.getenv("namespace", "development")
-    replicas = int(os.getenv("replicas", "1"))
+    namespace = os.getenv("namespace", "")
     image = os.getenv("docker_image", "")
+
+    # Optional attributes
+    replicas = int(os.getenv("replicas", "1"))
     port = int(os.getenv("port", "3000"))
-    ingress = cli_string_bool_conversion(os.getenv("ingress", "false"))
+    ingress = bool(strtobool(os.getenv("ingress", "false")))
     ingress_host = os.getenv("ingress_host", "")
     ingress_path = os.getenv("ingress_path", "/")
 
