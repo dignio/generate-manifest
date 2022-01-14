@@ -1,4 +1,8 @@
-# Deployment action
+# Generate Manifest Action
+
+This is a GitHub Action which can be used to generate the k8s manifest needed to deploy a specified service.
+
+It aims to a generic generator that can generate any manifest we'll need for deployment.
 
 ```yaml
 - uses: dignio/deployment@v1
