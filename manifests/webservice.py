@@ -1,18 +1,17 @@
+from cdk8s import ApiObjectMetadata
+from cdk8s import Duration
+from cdk8s_plus_22 import Service
+from cdk8s_plus_22 import Deployment
+from cdk8s_plus_22 import Ingress
+from cdk8s_plus_22 import IngressRule
+from cdk8s_plus_22 import IngressBackend
+from cdk8s_plus_22 import ServiceType
+from cdk8s_plus_22 import ContainerProps
+from cdk8s_plus_22 import RestartPolicy
+from cdk8s_plus_22 import Protocol
+from cdk8s_plus_22 import Probe
+from cdk8s_plus_22 import HttpIngressPathType
 from constructs import Construct
-from cdk8s import ApiObjectMetadata, Duration
-from cdk8s_plus_22 import (
-    Service,
-    Deployment,
-    Ingress,
-    IngressRule,
-    IngressBackend,
-    ServiceType,
-    ContainerProps,
-    RestartPolicy,
-    Protocol,
-    Probe,
-    HttpIngressPathType,
-)
 
 
 class WebService(Construct):
