@@ -46,7 +46,7 @@ def main():
         image=image,
         replicas=replicas,
         port=port,
-        containerPort=port,
+        container_port=port,
         ingress=ingress,
         ingress_host=ingress_host,
         ingress_path=ingress_path,

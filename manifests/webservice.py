@@ -24,7 +24,7 @@ class WebService(Construct):
         image: str,
         replicas: int,
         port: int,
-        containerPort: int,
+        container_port: int,
         ingress: bool,
         ingress_host: str,
         ingress_path: str,
@@ -58,20 +58,20 @@ class WebService(Construct):
                 ContainerProps(
                     name=id,
                     image=image,
-                    port=containerPort,
+                    port=container_port,
                     liveness=Probe.from_http_get(
                         path="/",
                         failure_threshold=3,
                         period_seconds=Duration.seconds(15),
                         timeout_seconds=Duration.seconds(60),
-                        port=containerPort,
+                        port=container_port,
                     ),
                     readiness=Probe.from_http_get(
                         path="/",
                         failure_threshold=3,
                         period_seconds=Duration.seconds(15),
                         timeout_seconds=Duration.seconds(60),
-                        port=containerPort,
+                        port=container_port,
                     ),
                 )
             ],
@@ -86,7 +86,7 @@ class WebService(Construct):
         service.add_deployment(
             deployment=deployment,
             port=port,
-            target_port=containerPort,
+            target_port=container_port,
             protocol=Protocol.TCP,
         )
 
