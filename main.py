@@ -9,17 +9,10 @@ from manifests.generate import GenerateManifest
 
 def main():
     """Generate a Kubernetes manifest for a requested service."""
-    # Mandatory attributes
-    name = os.getenv("app_name", "")
-    namespace = os.getenv("namespace", "")
-    image = os.getenv("docker_image", "")
-
-    # Optional attributes
-    replicas = int(os.getenv("replicas", "1"))
-    port = int(os.getenv("port", "3000"))
-    ingress = bool(strtobool(os.getenv("ingress", "false")))
-    ingress_host = os.getenv("ingress_host", "")
-    ingress_path = os.getenv("ingress_path", "/")
+    # Prepare input parameters
+    inputs = Inputs.from_env()
+    current_time = datetime.datetime.now().replace(microsecond=0).isoformat()
+    filename = f"{inputs.id}-{inputs.namespace}-{current_time}"
 
     app = App()
 

@@ -15,7 +15,11 @@ inputs:
     default: ''
   port:
     description: 'The exposed port number used by the application'
-    required: true
+    required: false
+    default: '80'
+  container_port:
+    description: 'The internal port used by the application'
+    required: false
     default: '80'
   replicas:
     description: 'Define how many replicas you need'
@@ -42,6 +46,7 @@ runs:
     - ${{ inputs.docker_image }}
     - ${{ inputs.replicas }}
     - ${{ inputs.port }}
+    - ${{ inputs.container_port }}
     - ${{ inputs.ingress }}
     - ${{ inputs.ingress_path }}
     - ${{ inputs.ingress_host }}
