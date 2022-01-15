@@ -1,10 +1,10 @@
 import datetime
-import os
-from distutils.util import strtobool
+from pathlib import Path
 
 from cdk8s import App
 
-from manifests.generate import GenerateManifest
+from manifests.generic import GenericManifest
+from utils.inputs import Inputs
 
 
 def main():
@@ -14,25 +14,14 @@ def main():
     current_time = datetime.datetime.now().replace(microsecond=0).isoformat()
     filename = f"{inputs.id}-{inputs.namespace}-{current_time}"
 
-    app = App()
-
-    GenerateManifest(
-        app,
-        filename=f"{name}-{namespace}-{datetime.datetime.now().replace(microsecond=0).isoformat()}",
-        id=name,
-        namespace=namespace,
-        image=image,
-        replicas=replicas,
-        port=port,
-        container_port=port,
-        ingress=ingress,
-        ingress_host=ingress_host,
-        ingress_path=ingress_path,
-    )
-
+    # Generate the manifest, and save it in a folder called 'output'
+    app = App(outdir="output")
+    GenericManifest.from_inputs(app, filename, inputs)
     app.synth()
 
-    # print(f"::set-output name=myOutput::{my_output}")
+    # Read and output the manifest to the caller
+    with Path(f"output/{filename}") as manifest_file:
+        print(f"::set-output name=manifest::{manifest_file.read()}")
 
 
 if __name__ == "__main__":
