@@ -1,5 +1,4 @@
 import datetime
-import base64
 
 from cdk8s import App
 
@@ -16,7 +15,7 @@ def main():
     filename = f"{inputs.app_name}-{inputs.namespace}-{current_time}"
 
     # Generate the manifest, and save it in a folder called 'output'
-    app = App(outdir="output")
+    app = App()
     GenericManifest.from_inputs(app, filename, inputs)
 
     print(f"::set-output name=manifest::{app.synth_yaml()}")
