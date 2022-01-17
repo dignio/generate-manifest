@@ -11,8 +11,9 @@ def main():
     """Generate a Kubernetes manifest for a requested service."""
     # Prepare input parameters
     inputs = Inputs.from_env()
+
     current_time = datetime.datetime.now().replace(microsecond=0).isoformat()
-    filename = f"{inputs.id}-{inputs.namespace}-{current_time}"
+    filename = f"{inputs.app_name}-{inputs.namespace}-{current_time}"
 
     # Generate the manifest, and save it in a folder called 'output'
     app = App(outdir="output")

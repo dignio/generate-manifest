@@ -26,15 +26,15 @@ class WebService(Construct):
     @classmethod
     def from_inputs(cls, scope: Construct, inputs: Inputs):
         """Create a webservice from a set of input parameters."""
-        webservice = WebService(scope, inputs.id)
-        labels = {"app": inputs.id}
+        webservice = WebService(scope, inputs.app_name)
+        labels = {"app": inputs.app_name}
 
         # Create a service
         service = Service(
             webservice,
-            id=f"{id}-service",
+            id=f"{inputs.app_name}-service",
             metadata=ApiObjectMetadata(
-                name=inputs.id,
+                name=inputs.app_name,
                 labels=labels,
                 namespace=inputs.namespace,
                 annotations={"alb.ingress.kubernetes.io/target-type": "ip"},
@@ -45,16 +45,16 @@ class WebService(Construct):
         # Create a deployment
         deployment = Deployment(
             webservice,
-            id=f"{id}-deployment",
+            id=f"{inputs.app_name}-deployment",
             metadata=ApiObjectMetadata(
-                name=inputs.id,
+                name=inputs.app_name,
                 labels=labels,
                 namespace=inputs.namespace,
             ),
             containers=[
                 ContainerProps(
-                    name=id,
-                    image=inputs.image,
+                    name=inputs.app_name,
+                    image=inputs.docker_image,
                     port=inputs.container_port,
                     liveness=Probe.from_http_get(
                         path="/",
@@ -78,8 +78,8 @@ class WebService(Construct):
         )
 
         # Attach the deployment to the service.
-        deployment.pod_metadata.add_label(value=inputs.id, key="app")
-        deployment.select_by_label(value=inputs.id, key="app")
+        deployment.pod_metadata.add_label(value=inputs.app_name, key="app")
+        deployment.select_by_label(value=inputs.app_name, key="app")
         service.add_deployment(
             deployment=deployment,
             port=inputs.port,
@@ -91,9 +91,9 @@ class WebService(Construct):
         if inputs.ingress:
             Ingress(
                 webservice,
-                id=inputs.id,
+                id=inputs.app_name,
                 metadata=ApiObjectMetadata(
-                    name=inputs.id,
+                    name=inputs.app_name,
                     labels=labels,
                     namespace=inputs.namespace,
                     annotations={
@@ -104,7 +104,7 @@ class WebService(Construct):
                         "alb.ingress.kubernetes.io/healthcheck-path": "/",
                         "alb.ingress.kubernetes.io/healthcheck-interval-seconds": "20",
                         "alb.ingress.kubernetes.io/success-codes": "200",
-                        "alb.ingress.kubernetes.io/load-balancer-name": f"ingress-{inputs.id}",
+                        "alb.ingress.kubernetes.io/load-balancer-name": f"ingress-{inputs.app_name}",
                     },
                 ),
                 rules=[
