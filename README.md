@@ -7,6 +7,7 @@ It aims to a generic generator that can generate any manifest we'll need for dep
 ```yaml
 - uses: dignio/generate-manifest@v1
   name: Generate the Kubernetes manifest
+  id: generate_manifest
   needs: build_and_push
   with:
     # These must be specified for the action to work
@@ -21,6 +22,16 @@ It aims to a generic generator that can generate any manifest we'll need for dep
     ingress: true
     ingress_host: prevent.dev.dignio.dev
     ingress_path: /
+```
+
+### Action output
+
+The output from this action is the generated manifest. Can be accessed by other steps by using this command.
+
+```yaml
+- uses: ...
+  with:
+    manifest: ${{ steps.generate_manifest.manifest }}
 ```
 
 ## Setup
