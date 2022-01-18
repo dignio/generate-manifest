@@ -1,0 +1,52 @@
+name: 'Create the Kubernetes manifest'
+description: 'This action will create the Kubernetes manifest by using cdk8s. By doing this we do not have to create manifests manually for our applications.'
+inputs:
+  app_name:
+    description: 'The application name'
+    required: true
+    default: ''
+  namespace:
+    description: 'The Kubernetes namespace'
+    required: true
+    default: 'development'
+  docker_image:
+    description: 'The full docker image with tag. <url>/<repo>:<tag>'
+    required: true
+    default: ''
+  port:
+    description: 'The exposed port number used by the application'
+    required: false
+    default: '80'
+  container_port:
+    description: 'The internal port used by the application'
+    required: false
+    default: '80'
+  replicas:
+    description: 'Define how many replicas you need'
+    required: false
+    default: '1'
+  ingress:
+    description: 'Should the application have an ingress of its own? Ask devex.'
+    required: false
+    default: 'false'
+  ingress_path:
+    description: 'The application root URL path'
+    required: false
+    default: '/'
+  ingress_host:
+    description: 'The host name of the application. I.e. prevent.dev.dignio.dev'
+    required: false
+    default: ''
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.app_name }}
+    - ${{ inputs.namespace }}
+    - ${{ inputs.docker_image }}
+    - ${{ inputs.replicas }}
+    - ${{ inputs.port }}
+    - ${{ inputs.container_port }}
+    - ${{ inputs.ingress }}
+    - ${{ inputs.ingress_path }}
+    - ${{ inputs.ingress_host }}
