@@ -5,117 +5,42 @@ This is a GitHub Action which can be used to generate the k8s manifest needed to
 It aims to a generic generator that can generate any manifest we'll need for deployment.
 
 ```yaml
-- uses: dignio/deployment@v1
-  name: Deploy to k8s
-  needs: build_and_push #  We have to wait for the docker image build
-  with:
-    token: "${{ DEPLOYMENT_TOKEN }}" #  create a token each app as a secret. Map the token to the application.
-    environment: #  create a config and map the envs
-      - development
-      - staging
-
-# If it is a release
-# TODO: research how to limit users allowed to do the release to production instances
-# https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment
-- uses: dignio/deployment@v1
-  name: Deploy to k8s
+- uses: dignio/create-manifest@v1
+  name: Create the Kubernetes manifest
   needs: build_and_push
   with:
-    token: "${{ DEPLOYMENT_TOKEN }}"
-    environment:
-      - production-shared
-      - app
-      - is
-      - posifon
-      - uk
-      - us
+    # These must be specified for the action to work
+    app_name: prevent-ui
+    namespace: development
+    docker_image: 833870238474.dkr.ecr.eu-north-1.amazonaws.com/prevent-ui:9628f958eb4a69571cfee558624fa0a33fa49c4f
+
+    # These are optional
+    replicas: 1
+    port: 80
+    container_port: 80
+    ingress: true
+    ingress_host: prevent.dev.dignio.dev
+    ingress_path: /
 ```
 
-## What should the action do?
+## Setup
 
-The following steps are the workflow setup for the Apotek1 integration. What we want is to rewrite this into a generic action for deployments.
-The sample yaml is just to show what we have to do each step. Possibly we have to rewrite some of it to javascript/python to make it more dynamic. Looking into this.
-
-### Configure AWS credentials
-
-- Access key
-- Secret access key
-- Region
-
-```yaml
-- name: Configure AWS credentials
-  uses: aws-actions/configure-aws-credentials@v1
-  with:
-    aws-access-key-id: ${{ secrets.DEVELOPMENT_GHK8S_AWS_ACCESS_KEY_ID }}
-    aws-secret-access-key: ${{ secrets.DEVELOPMENT_GHK8S_AWS_SECRET_KEY_ID }}
-    aws-region: eu-north-1
+```
+pipenv install
 ```
 
-### Sign in to Amazon ECR
+## Testing this action locally
 
-We have to sign in to get the registry information
-
-```yaml
-- name: Login to Amazon ECR
-  id: login-ecr
-  uses: aws-actions/amazon-ecr-login@v1
+```bash
+app_name=prevent-ui \
+namespace=development \
+replicas=1 \
+docker_image="387308402250.dkr.ecr.eu-north-1.amazonaws.com/prevent-ui:9628f958eb4a69571cfee558624fa0a33fa49c4f" \
+port=80 \
+container_port=80 \
+ingress=true \
+ingress_host=prevent.dev.dignio.dev \
+pipenv run generate
 ```
 
-### Checkout the repository
-
-Checkout the kubernetes repository to get the manifest files
-
-```yaml
-- name: Checkout code
-  uses: actions/checkout@v2
-  with:
-    repository: dignio/kubernetes
-    token: ${{ secrets.REPO_TOKEN }}
-```
-
-### Install kustomize
-
-```yaml
-- name: Install kustomize
-  uses: imranismail/setup-kustomize@v1
-```
-
-### Build the manifest files with Kustomize
-
-This will edit the kustomize fil and update the docker image tag to the latest one
-
-```yaml
-- name: Build the manifest with kustomize
-  env:
-    ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-    ECR_REPOSITORY: <app-name>
-    IMAGE_TAG: ${{ github.sha }}
-  run: |
-    cd services/<app-name>/dev-k8s-eu-north-1
-    kustomize edit set image <app-name>=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
-    kustomize build . > <app-name>-dev-k8s-eu-north-1-manifest.yaml
-    cd
-```
-
-### Should we commit / push the manifest file to git/s3?
-
-### Apply the manifest to the EKS cluster(s)
-
-The end game is to apply the manifest to the EKS cluster.
-
-TODO: add what cluster to deploy to
-
-```yaml
-- name: Deploy to EKS cluster
-  uses: Consensys/kubernetes-action@master
-  env:
-    KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
-    DEVELOPMENT_GHK8S_AWS_ACCESS_KEY_ID: ${{ secrets.DEVELOPMENT_GHK8S_AWS_ACCESS_KEY_ID }}
-    AWS_SECRET_ACCESS_KEY: ${{ secrets.DEVELOPMENT_GHK8S_AWS_SECRET_KEY_ID }}
-    AWS_REGION: eu-north-1
-  with:
-    args: apply -f services/prevent-ui/dev-k8s-eu-north-1/prevent-ui-manifest.yaml
-```
-
-python discord way of deploying: https://github.com/python-discord/bot/blob/main/.github/workflows/deploy.yml
-
+---
