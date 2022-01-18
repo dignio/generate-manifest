@@ -1,9 +1,11 @@
-FROM python:3.9-alpine
+FROM python:3.9-slim-buster
 
 WORKDIR /app
 
-RUN apk --no-cache add yarn npm
-RUN yarn global add cdk8s-cli && yarn cache clean
+RUN apt-get update && apt-get install -y curl
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get install -y nodejs
+# RUN npm i -g cdk8s-cli
 RUN pip install pipenv
 
 # Install dependencies
