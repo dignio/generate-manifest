@@ -1,21 +1,17 @@
-FROM python:3.9-slim AS builder
-ADD . /app
+FROM python:3.9-slim-buster
+
 WORKDIR /app
 
-# Install pipenv
+RUN apt-get update && apt-get install -y curl
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get install -y nodejs
+# RUN npm i -g cdk8s-cli
 RUN pip install pipenv
 
 # Install dependencies
-COPY Pipfile* ./
+COPY . .
 RUN pipenv lock --requirements > requirements.txt
 RUN pip install --target=/app -r requirements.txt
 
-# A distroless container image with Python and some basics like SSL certificates
-# https://github.com/GoogleContainerTools/distroless
-FROM gcr.io/distroless/python3-debian10
-
-COPY --from=builder /app /app
-WORKDIR /app
-ENV PYTHONPATH /app
-
-ENTRYPOINT ["/app/main.py"]
+CMD ["/app/main.py"]
+ENTRYPOINT ["python"]
