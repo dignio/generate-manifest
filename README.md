@@ -5,8 +5,8 @@ This is a GitHub Action which can be used to generate the k8s manifest needed to
 It aims to a generic generator that can generate any manifest we'll need for deployment.
 
 ```yaml
-- uses: dignio/create-manifest@v1
-  name: Create the Kubernetes manifest
+- uses: dignio/generate-manifest@v1
+  name: Generate the Kubernetes manifest
   needs: build_and_push
   with:
     # These must be specified for the action to work
