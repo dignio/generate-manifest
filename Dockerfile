@@ -1,21 +1,15 @@
-FROM python:3.9-slim AS builder
-ADD . /app
+FROM python:3.9-alpine
+
 WORKDIR /app
 
-# Install pipenv
+RUN apk --no-cache add yarn npm
+RUN yarn global add cdk8s-cli && yarn cache clean
 RUN pip install pipenv
 
 # Install dependencies
-COPY Pipfile* ./
+COPY . .
 RUN pipenv lock --requirements > requirements.txt
 RUN pip install --target=/app -r requirements.txt
 
-# A distroless container image with Python and some basics like SSL certificates
-# https://github.com/GoogleContainerTools/distroless
-FROM gcr.io/distroless/python3-debian10
-
-COPY --from=builder /app /app
-WORKDIR /app
-ENV PYTHONPATH /app
-
-ENTRYPOINT ["/app/main.py"]
+CMD ["/app/main.py"]
+ENTRYPOINT ["python"]
