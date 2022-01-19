@@ -27,13 +27,13 @@ class Inputs:
     @classmethod
     def from_env(cls):
         return Inputs(
-            app_name=os.getenv("app_name", ""),
-            namespace=os.getenv("namespace", ""),
-            docker_image=os.getenv("docker_image"),
-            replicas=int(os.getenv("replicas", "1")),
-            port=int(os.getenv("port", "3000")),
-            container_port=int(os.getenv("container_port")),
-            ingress=bool(strtobool(os.getenv("ingress", "false"))),
-            ingress_host=os.getenv("ingress_host"),
-            ingress_path=os.getenv("ingress_path", "/"),
+            app_name=os.getenv("INPUT_APP_NAME", ""),
+            namespace=os.getenv("INPUT_NAMESPACE", ""),
+            docker_image=os.getenv("INPUT_DOCKER_IMAGE"),
+            replicas=int(os.getenv("INPUT_REPLICAS", "1")),
+            port=int(os.getenv("INPUT_PORT", "3000")),
+            container_port=int(os.getenv("INPUT_CONTAINER_PORT")),
+            ingress=bool(strtobool(os.getenv("INPUT_INGRESS", "false"))),
+            ingress_host=os.getenv("INPUT_INGRESS_HOST"),
+            ingress_path=os.getenv("INPUT_INGRESS_PATH", "/"),
         )

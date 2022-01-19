@@ -1,0 +1,36 @@
+name: Test action
+on:
+  pull_request:
+    types: [ opened, synchronize ]
+jobs:
+  test-generate-manifest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # === Test against the repo's copy of the action
+      - uses: ./  
+        name: Generate the Kubernetes manifest
+        id: generate_manifest
+        with:
+          # These must be specified for the action to work
+          app_name: prevent-ui
+          namespace: development
+          docker_image: 1337.dkr.ecr.eu-north-1.amazonaws.com/prevent-ui:9628f958eb4a69571cfee558624fa0a33fa49c4f
+
+          # These are optional
+          replicas: 1
+          port: 80
+          container_port: 80
+          ingress: true
+          ingress_host: prevent.dev.dignio.dev
+          ingress_path: /
+
+      # === Echo the output to see if it actually works
+      - name: Echo the manifest output
+        run: "echo ${{steps.generate_manifest.outputs.manifest}} | base64 --decode >> /tmp/k8s.manifest.yaml"
+
+      # === Compare the files
+      - name: Compare the output with the fixture
+        run: "cmp $GITHUB_WORKSPACE/fixture/prevent-ui.yaml /tmp/k8s.manifest.yaml || exit 1"
+

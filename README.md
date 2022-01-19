@@ -43,14 +43,6 @@ pipenv install
 ## Testing this action locally
 
 ```bash
-app_name=prevent-ui \
-namespace=development \
-replicas=1 \
-docker_image="387308402250.dkr.ecr.eu-north-1.amazonaws.com/prevent-ui:9628f958eb4a69571cfee558624fa0a33fa49c4f" \
-port=80 \
-container_port=80 \
-ingress=true \
-ingress_host=prevent.dev.dignio.dev \
 pipenv run generate
 ```
 

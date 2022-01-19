@@ -13,5 +13,4 @@ COPY . .
 RUN pipenv lock --requirements > requirements.txt
 RUN pip install --target=/app -r requirements.txt
 
-CMD ["/app/main.py"]
-ENTRYPOINT ["python"]
+ENTRYPOINT ["/app/main.py"]
