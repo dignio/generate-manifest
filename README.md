@@ -43,7 +43,7 @@ pipenv install
 ## Testing this action locally
 
 ```bash
-export $(cat inputs.env | xargs) && pipenv run generate
+pipenv run generate
 ```
 
 ---
