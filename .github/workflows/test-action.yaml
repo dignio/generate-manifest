@@ -30,7 +30,7 @@ jobs:
       - name: Echo the manifest output
         run: "echo ${{steps.generate_manifest.outputs.manifest}} | base64 --decode >> /tmp/k8s.manifest.yaml"
 
-      # === Check the diff, and return exit 1 if it is a diff
-      - name: Test the output with the fixture
+      # === Compare the files
+      - name: Compare the output with the fixture
         run: "cmp $GITHUB_WORKSPACE/fixture/prevent-ui.yaml /tmp/k8s.manifest.yaml || exit 1"
 
