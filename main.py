@@ -19,7 +19,9 @@ def main():
     app = App()
     GenericManifest.from_inputs(app, filename, inputs)
 
-    print(f"::set-output name=manifest::{app.synth_yaml()}")
+    output = base64.b64encode(app.synth_yaml().encode("utf-8")).decode("utf-8")
+
+    print(f"::set-output name=manifest::{output}")
 
 
 if __name__ == "__main__":
