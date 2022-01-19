@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import datetime
+import base64
 
 from cdk8s import App
 
