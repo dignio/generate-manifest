@@ -31,7 +31,7 @@ The output from this action is the generated manifest. Can be accessed by other 
 ```yaml
 - uses: ...
   with:
-    manifest: ${{ steps.generate_manifest.manifest }}
+    manifest: ${{ steps.generate_manifest.outputs.manifest }}
 ```
 
 ## Setup
