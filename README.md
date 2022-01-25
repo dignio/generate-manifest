@@ -13,7 +13,7 @@ It aims to a generic generator that can generate any manifest we'll need for dep
     # These must be specified for the action to work
     app_name: prevent-ui
     namespace: development
-    docker_image: 833870238474.dkr.ecr.eu-north-1.amazonaws.com/prevent-ui:9628f958eb4a69571cfee558624fa0a33fa49c4f
+    docker_image: <org-id>.dkr.ecr.<region>.amazonaws.com/<repo-name>:<tag>
 
     # These are optional
     replicas: 1
