@@ -5,6 +5,10 @@ inputs:
     description: 'The application name'
     required: true
     default: ''
+  service_type:
+    description: 'Service type selector. I.e. webservice.'
+    required: true
+    default: ''
   namespace:
     description: 'The Kubernetes namespace'
     required: true
