@@ -11,7 +11,7 @@ class GenericManifest(Chart):
         """Create a Manifest from input parameters."""
         # Get the appropriate template
         manifest = GenericManifest(scope, filename)
-        template = get_manifest_template(inputs.app_name)
+        template = get_manifest_template(inputs.service_type)
 
         # Instantiate the template
         template.from_inputs(manifest, inputs)
