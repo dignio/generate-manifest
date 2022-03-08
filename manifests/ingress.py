@@ -1,5 +1,5 @@
 from cdk8s import ApiObjectMetadata
-from constructs import Construct
+from cdk8s import App
 from cdk8s_plus_22 import Ingress
 from cdk8s_plus_22 import IngressRule
 from cdk8s_plus_22 import IngressBackend
@@ -8,11 +8,11 @@ from cdk8s_plus_22 import HttpIngressPathType
 from utils.inputs import Inputs
 
 
-def create_ingress(manifest: Construct, inputs: Inputs, data: dict) -> None:
+def create_ingress(manifest: App, inputs: Inputs, data: dict) -> None:
     """This function will add an ingress to the webservice object
 
     Args:
-        manifest (Construct): The manifest object we attach the ingress to
+        manifest (App): The manifest object we attach the ingress to
         inputs (Inputs): The Github action INPUT arguments
         data (dict): Data defined by the service which are using this method. I.e. labels
     """
