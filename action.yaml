@@ -9,6 +9,9 @@ inputs:
     description: 'Service type selector. I.e. webservice.'
     required: true
     default: ''
+  instance:
+    description: 'The instance we want to build the manifest for. I.e. development.'
+    required: true
   namespace:
     description: 'The Kubernetes namespace'
     required: true
@@ -46,6 +49,8 @@ runs:
   image: 'Dockerfile'
   args:
     - ${{ inputs.app_name }}
+    - ${{ inputs.service_type }}
+    - ${{ inputs.instance }}
     - ${{ inputs.namespace }}
     - ${{ inputs.docker_image }}
     - ${{ inputs.replicas }}

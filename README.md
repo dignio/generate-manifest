@@ -13,6 +13,7 @@ It aims to a generic generator that can generate any manifest we'll need for dep
     # These must be specified for the action to work
     app_name: prevent-ui
     service_type: webservice
+    instance: development
     namespace: development
     docker_image: <org-id>.dkr.ecr.<region>.amazonaws.com/<repo-name>:<tag>
 
