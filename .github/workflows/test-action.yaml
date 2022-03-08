@@ -9,13 +9,14 @@ jobs:
       - uses: actions/checkout@v2
 
       # === Test against the repo's copy of the action
-      - uses: ./  
+      - uses: ./
         name: Generate the Kubernetes manifest
         id: generate_manifest
         with:
           # These must be specified for the action to work
           app_name: prevent-ui
           service_type: webservice.
+          instance: development
           namespace: development
           docker_image: 1337.dkr.ecr.eu-north-1.amazonaws.com/prevent-ui:9628f958eb4a69571cfee558624fa0a33fa49c4f
 
