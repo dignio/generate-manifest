@@ -10,6 +10,7 @@ class Inputs:
     # Mandatory attributes
     app_name: str
     service_type: str
+    instance: str
     namespace: str
     docker_image: str
 
@@ -30,6 +31,7 @@ class Inputs:
         return Inputs(
             app_name=os.getenv("INPUT_APP_NAME", ""),
             service_type=os.getenv("INPUT_SERVICE_TYPE", ""),
+            instance=os.getenv("INPUT_INSTANCE", ""),
             namespace=os.getenv("INPUT_NAMESPACE", ""),
             docker_image=os.getenv("INPUT_DOCKER_IMAGE"),
             replicas=int(os.getenv("INPUT_REPLICAS", "1")),

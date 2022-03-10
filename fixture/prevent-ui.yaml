@@ -66,14 +66,14 @@ metadata:
     alb.ingress.kubernetes.io/healthcheck-interval-seconds: "20"
     alb.ingress.kubernetes.io/healthcheck-path: /
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
-    alb.ingress.kubernetes.io/load-balancer-name: ingress-prevent-ui
+    alb.ingress.kubernetes.io/load-balancer-name: ingress-development-prevent-ui
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-1-2017-01
     alb.ingress.kubernetes.io/success-codes: "200"
     kubernetes.io/ingress.class: alb
   labels:
     app: prevent-ui
-  name: prevent-ui
+  name: development-prevent-ui
   namespace: development
 spec:
   rules:

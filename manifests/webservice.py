@@ -2,17 +2,14 @@ from cdk8s import ApiObjectMetadata
 from cdk8s import Duration
 from cdk8s_plus_22 import Service
 from cdk8s_plus_22 import Deployment
-from cdk8s_plus_22 import Ingress
-from cdk8s_plus_22 import IngressRule
-from cdk8s_plus_22 import IngressBackend
 from cdk8s_plus_22 import ServiceType
 from cdk8s_plus_22 import ContainerProps
 from cdk8s_plus_22 import RestartPolicy
 from cdk8s_plus_22 import Protocol
 from cdk8s_plus_22 import Probe
-from cdk8s_plus_22 import HttpIngressPathType
 from constructs import Construct
 
+from .ingress import create_ingress
 from utils.inputs import Inputs
 
 
@@ -89,30 +86,4 @@ class WebService(Construct):
 
         # Add an ingress, if necessary.
         if inputs.ingress:
-            Ingress(
-                webservice,
-                id=inputs.app_name,
-                metadata=ApiObjectMetadata(
-                    name=inputs.app_name,
-                    labels=labels,
-                    namespace=inputs.namespace,
-                    annotations={
-                        "kubernetes.io/ingress.class": "alb",
-                        "alb.ingress.kubernetes.io/scheme": "internet-facing",
-                        "alb.ingress.kubernetes.io/listen-ports": '[{"HTTPS":443}]',
-                        "alb.ingress.kubernetes.io/ssl-policy": "ELBSecurityPolicy-TLS-1-1-2017-01",
-                        "alb.ingress.kubernetes.io/healthcheck-path": "/",
-                        "alb.ingress.kubernetes.io/healthcheck-interval-seconds": "20",
-                        "alb.ingress.kubernetes.io/success-codes": "200",
-                        "alb.ingress.kubernetes.io/load-balancer-name": f"ingress-{inputs.app_name}",
-                    },
-                ),
-                rules=[
-                    IngressRule(
-                        backend=IngressBackend.from_service(service=service, port=inputs.port),
-                        host=inputs.ingress_host,
-                        path=inputs.ingress_path,
-                        path_type=HttpIngressPathType.PREFIX,
-                    )
-                ],
-            )
+            create_ingress(webservice, inputs, {"service": service, "labels": labels})
