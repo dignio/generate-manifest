@@ -48,4 +48,5 @@ pipenv install
 pipenv run generate
 ```
 
----
+## Tests
+This action is using the `fixture/prevent-ui.yaml` while running the `.github/workflows/test-action.yaml` to validate the output is correct
