@@ -18,6 +18,7 @@ It aims to a generic generator that can generate any manifest we'll need for dep
     docker_image: <org-id>.dkr.ecr.<region>.amazonaws.com/<repo-name>:<tag>
 
     # These are optional
+    healthcheck_path: /healthz
     replicas: 1
     port: 80
     container_port: 80

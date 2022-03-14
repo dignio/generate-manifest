@@ -21,6 +21,7 @@ jobs:
           docker_image: 1337.dkr.ecr.eu-north-1.amazonaws.com/prevent-ui:9628f958eb4a69571cfee558624fa0a33fa49c4f
 
           # These are optional
+          healthcheck_path: /healthz
           replicas: 1
           port: 80
           container_port: 80

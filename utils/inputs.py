@@ -13,6 +13,7 @@ class Inputs:
     instance: str
     namespace: str
     docker_image: str
+    healthcheck_path: str
 
     # Optional attributes
     replicas: int
@@ -34,6 +35,7 @@ class Inputs:
             instance=os.getenv("INPUT_INSTANCE", ""),
             namespace=os.getenv("INPUT_NAMESPACE", ""),
             docker_image=os.getenv("INPUT_DOCKER_IMAGE"),
+            healthcheck_path=os.getenv("INPUT_HEALTHCHECK_PATH"),
             replicas=int(os.getenv("INPUT_REPLICAS", "1")),
             port=int(os.getenv("INPUT_PORT", "3000")),
             container_port=int(os.getenv("INPUT_CONTAINER_PORT")),

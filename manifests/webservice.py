@@ -54,14 +54,14 @@ class WebService(Construct):
                     image=inputs.docker_image,
                     port=inputs.container_port,
                     liveness=Probe.from_http_get(
-                        path="/",
+                        path=inputs.healthcheck_path,
                         failure_threshold=3,
                         period_seconds=Duration.seconds(15),
                         timeout_seconds=Duration.seconds(60),
                         port=inputs.container_port,
                     ),
                     readiness=Probe.from_http_get(
-                        path="/",
+                        path=inputs.healthcheck_path,
                         failure_threshold=3,
                         period_seconds=Duration.seconds(15),
                         timeout_seconds=Duration.seconds(60),

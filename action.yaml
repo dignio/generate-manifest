@@ -20,6 +20,10 @@ inputs:
     description: 'The full docker image with tag. <url>/<repo>:<tag>'
     required: true
     default: ''
+  healthcheck_path:
+    description: 'The application health check path'
+    required: false
+    default: '/'
   port:
     description: 'The exposed port number used by the application'
     required: false
@@ -53,6 +57,7 @@ runs:
     - ${{ inputs.instance }}
     - ${{ inputs.namespace }}
     - ${{ inputs.docker_image }}
+    - ${{ inputs.healthcheck_path }}
     - ${{ inputs.replicas }}
     - ${{ inputs.port }}
     - ${{ inputs.container_port }}
