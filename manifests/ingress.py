@@ -28,7 +28,7 @@ def create_ingress(manifest: App, inputs: Inputs, data: dict) -> None:
                 "alb.ingress.kubernetes.io/scheme": "internet-facing",
                 "alb.ingress.kubernetes.io/listen-ports": '[{"HTTPS":443}]',
                 "alb.ingress.kubernetes.io/ssl-policy": "ELBSecurityPolicy-TLS-1-1-2017-01",
-                "alb.ingress.kubernetes.io/healthcheck-path": "/",
+                "alb.ingress.kubernetes.io/healthcheck-path": inputs.healthcheck_path,
                 "alb.ingress.kubernetes.io/healthcheck-interval-seconds": "20",
                 "alb.ingress.kubernetes.io/success-codes": "200",
                 "alb.ingress.kubernetes.io/load-balancer-name": f"ingress-{inputs.instance}-{inputs.app_name}",

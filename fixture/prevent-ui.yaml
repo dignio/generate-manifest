@@ -41,7 +41,7 @@ spec:
           livenessProbe:
             failureThreshold: 3
             httpGet:
-              path: /
+              path: /healthz
               port: 80
             periodSeconds: 15
             timeoutSeconds: 60
@@ -51,7 +51,7 @@ spec:
           readinessProbe:
             failureThreshold: 3
             httpGet:
-              path: /
+              path: /healthz
               port: 80
             periodSeconds: 15
             timeoutSeconds: 60
@@ -64,7 +64,7 @@ kind: Ingress
 metadata:
   annotations:
     alb.ingress.kubernetes.io/healthcheck-interval-seconds: "20"
-    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/healthcheck-path: /healthz
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
     alb.ingress.kubernetes.io/load-balancer-name: ingress-development-prevent-ui
     alb.ingress.kubernetes.io/scheme: internet-facing
