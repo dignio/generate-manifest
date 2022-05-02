@@ -10,7 +10,7 @@ RUN pip install pipenv
 
 # Install dependencies
 COPY . .
-RUN pipenv lock --requirements > requirements.txt
-RUN pip install --target=/app -r requirements.txt
+
+RUN pipenv install --system --deploy
 
 ENTRYPOINT ["/app/main.py"]
