@@ -18,7 +18,7 @@ jobs:
           service_type: webservice
           instance: development
           namespace: development
-          docker_image: 1337.dkr.ecr.eu-north-1.amazonaws.com/prevent-ui:9628f958eb4a69571cfee558624fa0a33fa49c4f
+          docker_image: 1337.dkr.ecr.eu-north-1.amazonaws.com/prevent-api:9628f958eb4a69571cfee558624fa0a33fa49c4f
 
           # Add secret config
           secretsmanager: true

@@ -10,9 +10,9 @@ metadata:
 spec:
   externalIPs: []
   ports:
-    - port: 5000
+    - port: 80
       protocol: TCP
-      targetPort: 5000
+      targetPort: 80
   selector:
     app: prevent-api
   type: NodePort
@@ -41,18 +41,18 @@ spec:
           livenessProbe:
             failureThreshold: 3
             httpGet:
-              path: /apii
-              port: 5000
+              path: /healthz
+              port: 80
             periodSeconds: 15
             timeoutSeconds: 60
           name: prevent-api
           ports:
-            - containerPort: 5000
+            - containerPort: 80
           readinessProbe:
             failureThreshold: 3
             httpGet:
-              path: /apii
-              port: 5000
+              path: /healthz
+              port: 80
             periodSeconds: 15
             timeoutSeconds: 60
           volumeMounts: []
@@ -64,7 +64,7 @@ kind: Ingress
 metadata:
   annotations:
     alb.ingress.kubernetes.io/healthcheck-interval-seconds: "20"
-    alb.ingress.kubernetes.io/healthcheck-path: /apii
+    alb.ingress.kubernetes.io/healthcheck-path: /healthz
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
     alb.ingress.kubernetes.io/load-balancer-name: ingress-development-prevent-api
     alb.ingress.kubernetes.io/scheme: internet-facing
@@ -84,7 +84,7 @@ spec:
               service:
                 name: prevent-api
                 port:
-                  number: 5000
+                  number: 80
             path: /
             pathType: Prefix
 ---
