@@ -14,7 +14,7 @@ jobs:
         id: generate_manifest
         with:
           # These must be specified for the action to work
-          app_name: prevent-ui
+          app_name: prevent-api
           service_type: webservice
           instance: development
           namespace: development
