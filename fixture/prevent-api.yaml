@@ -4,55 +4,55 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/target-type: ip
   labels:
-    app: prevent-ui
-  name: prevent-ui
+    app: prevent-api
+  name: prevent-api
   namespace: development
 spec:
   externalIPs: []
   ports:
-    - port: 80
+    - port: 5000
       protocol: TCP
-      targetPort: 80
+      targetPort: 5000
   selector:
-    app: prevent-ui
+    app: prevent-api
   type: NodePort
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: prevent-ui
-  name: prevent-ui
+    app: prevent-api
+  name: prevent-api
   namespace: development
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: prevent-ui
+      app: prevent-api
   template:
     metadata:
       labels:
-        app: prevent-ui
+        app: prevent-api
     spec:
       containers:
         - env: []
-          image: 1337.dkr.ecr.eu-north-1.amazonaws.com/prevent-ui:9628f958eb4a69571cfee558624fa0a33fa49c4f
+          image: 1337.dkr.ecr.eu-north-1.amazonaws.com/prevent-api:9628f958eb4a69571cfee558624fa0a33fa49c4f
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3
             httpGet:
-              path: /healthz
-              port: 80
+              path: /apii
+              port: 5000
             periodSeconds: 15
             timeoutSeconds: 60
-          name: prevent-ui
+          name: prevent-api
           ports:
-            - containerPort: 80
+            - containerPort: 5000
           readinessProbe:
             failureThreshold: 3
             httpGet:
-              path: /healthz
-              port: 80
+              path: /apii
+              port: 5000
             periodSeconds: 15
             timeoutSeconds: 60
           volumeMounts: []
@@ -64,16 +64,16 @@ kind: Ingress
 metadata:
   annotations:
     alb.ingress.kubernetes.io/healthcheck-interval-seconds: "20"
-    alb.ingress.kubernetes.io/healthcheck-path: /healthz
+    alb.ingress.kubernetes.io/healthcheck-path: /apii
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
-    alb.ingress.kubernetes.io/load-balancer-name: ingress-development-prevent-ui
+    alb.ingress.kubernetes.io/load-balancer-name: ingress-development-prevent-api
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/ssl-policy: ELBSecurityPolicy-TLS-1-1-2017-01
     alb.ingress.kubernetes.io/success-codes: "200"
     kubernetes.io/ingress.class: alb
   labels:
-    app: prevent-ui
-  name: development-prevent-ui
+    app: prevent-api
+  name: development-prevent-api
   namespace: development
 spec:
   rules:
@@ -82,8 +82,20 @@ spec:
         paths:
           - backend:
               service:
-                name: prevent-ui
+                name: prevent-api
                 port:
-                  number: 80
+                  number: 5000
             path: /
             pathType: Prefix
+---
+apiVersion: kubernetes-client.io/v1
+kind: ExternalSecret
+spec:
+  backendType: secretsManager
+  dataFrom:
+    - cluster/dev-k8s/prevent-api
+metadata:
+  labels:
+    app: prevent-api
+  name: prevent-api
+  namespace: development

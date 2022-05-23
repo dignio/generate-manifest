@@ -17,6 +17,10 @@ It aims to a generic generator that can generate any manifest we'll need for dep
     namespace: development
     docker_image: <org-id>.dkr.ecr.<region>.amazonaws.com/<repo-name>:<tag>
 
+    # Add secret config. Optional.
+    secretsmanager: true
+    cluster_name: dev-k8s
+
     # These are optional
     healthcheck_path: /healthz
     replicas: 1
@@ -27,7 +31,7 @@ It aims to a generic generator that can generate any manifest we'll need for dep
     ingress_path: /
 ```
 
-### Action output
+## Action output
 
 The output from this action is the generated manifest. Can be accessed by other steps by using this command.
 
@@ -50,4 +54,5 @@ pipenv run generate
 ```
 
 ## Tests
-This action is using the `fixture/prevent-ui.yaml` while running the `.github/workflows/test-action.yaml` to validate the output is correct
+
+This action is using the `fixture/prevent-api.yaml` while running the `.github/workflows/test-action.yaml` to validate the output is correct

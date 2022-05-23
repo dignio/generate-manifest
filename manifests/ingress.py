@@ -18,7 +18,7 @@ def create_ingress(manifest: App, inputs: Inputs, data: dict) -> None:
     """
     Ingress(
         manifest,
-        id=inputs.app_name,
+        id=f"{inputs.app_name}-ingress",
         metadata=ApiObjectMetadata(
             name=f"{inputs.instance}-{inputs.app_name}",
             labels=data["labels"],

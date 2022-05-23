@@ -10,6 +10,7 @@ from cdk8s_plus_22 import Probe
 from constructs import Construct
 
 from .ingress import create_ingress
+from .secret import create_secrets
 from utils.inputs import Inputs
 
 
@@ -87,3 +88,7 @@ class WebService(Construct):
         # Add an ingress, if necessary.
         if inputs.ingress:
             create_ingress(webservice, inputs, {"service": service, "labels": labels})
+
+        # Use secrets manager
+        if inputs.secretsmanager:
+            create_secrets(webservice, inputs, {"service": service, "labels": labels})

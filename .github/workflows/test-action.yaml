@@ -20,6 +20,10 @@ jobs:
           namespace: development
           docker_image: 1337.dkr.ecr.eu-north-1.amazonaws.com/prevent-ui:9628f958eb4a69571cfee558624fa0a33fa49c4f
 
+          # Add secret config
+          secretsmanager: true
+          cluster_name: dev-k8s
+
           # These are optional
           healthcheck_path: /healthz
           replicas: 1
@@ -35,5 +39,5 @@ jobs:
 
       # === Compare the files
       - name: Compare the output with the fixture
-        run: "cmp $GITHUB_WORKSPACE/fixture/prevent-ui.yaml /tmp/k8s.manifest.yaml || exit 1"
+        run: "cmp $GITHUB_WORKSPACE/fixture/prevent-api.yaml /tmp/k8s.manifest.yaml || exit 1"
 
