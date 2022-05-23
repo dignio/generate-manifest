@@ -36,7 +36,7 @@ def create_ingress(manifest: App, inputs: Inputs, data: dict) -> None:
         ),
         rules=[
             IngressRule(
-                backend=IngressBackend.from_service(service=data["service"], port=inputs.port),
+                backend=IngressBackend.from_service(serv=data["service"], port=inputs.port),
                 host=inputs.ingress_host,
                 path=inputs.ingress_path,
                 path_type=HttpIngressPathType.PREFIX,

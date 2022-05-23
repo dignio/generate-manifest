@@ -26,7 +26,9 @@ It aims to a generic generator that can generate any manifest we'll need for dep
     replicas: 1
     port: 80
     container_port: 80
-    ingress: true
+
+    # Ingress generation is currently not in use
+    ingress: false
     ingress_host: prevent.dev.dignio.dev
     ingress_path: /
 ```

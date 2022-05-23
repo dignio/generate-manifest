@@ -20,6 +20,7 @@ class Inputs:
     replicas: int
     port: int
     container_port: int
+    container_size: str
     cluster_name: str
     ingress: bool
     ingress_host: str
@@ -42,6 +43,7 @@ class Inputs:
             replicas=int(os.getenv("INPUT_REPLICAS", "1")),
             port=int(os.getenv("INPUT_PORT", "3000")),
             container_port=int(os.getenv("INPUT_CONTAINER_PORT")),
+            container_size=os.getenv("INPUT_CONTAINER_SIZE"),
             cluster_name=os.getenv("INPUT_CLUSTER_NAME"),
             ingress=bool(strtobool(os.getenv("INPUT_INGRESS", "false"))),
             ingress_host=os.getenv("INPUT_INGRESS_HOST"),

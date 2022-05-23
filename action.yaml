@@ -32,6 +32,10 @@ inputs:
     description: 'The internal port used by the application'
     required: false
     default: '80'
+  container_size:
+    description: 'The size of the container. CPU/Memory. small|medium|large|xlarge'
+    required: false
+    default: ''
   replicas:
     description: 'Define how many replicas you need'
     required: false
@@ -69,6 +73,7 @@ runs:
     - ${{ inputs.replicas }}
     - ${{ inputs.port }}
     - ${{ inputs.container_port }}
+    - ${{ inputs.container_size }}
     - ${{ inputs.secretsmanager }}
     - ${{ inputs.cluster_name }}
     - ${{ inputs.ingress }}

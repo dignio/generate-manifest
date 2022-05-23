@@ -1,9 +1,14 @@
 from cdk8s import ApiObjectMetadata
-from cdk8s import Duration
+from cdk8s import Duration, Size
+
 from cdk8s_plus_22 import Service
 from cdk8s_plus_22 import Deployment
 from cdk8s_plus_22 import ServiceType
 from cdk8s_plus_22 import ContainerProps
+from cdk8s_plus_22 import ContainerResources
+from cdk8s_plus_22 import CpuResources
+from cdk8s_plus_22 import Cpu
+from cdk8s_plus_22 import MemoryResources
 from cdk8s_plus_22 import RestartPolicy
 from cdk8s_plus_22 import Protocol
 from cdk8s_plus_22 import Probe
@@ -12,6 +17,7 @@ from constructs import Construct
 from .ingress import create_ingress
 from .secret import create_secrets
 from utils.inputs import Inputs
+from utils.resources import get_resources
 
 
 class WebService(Construct):
@@ -26,6 +32,8 @@ class WebService(Construct):
         """Create a webservice from a set of input parameters."""
         webservice = WebService(scope, inputs.app_name)
         labels = {"app": inputs.app_name}
+
+        memory, cpu = get_resources(inputs.container_size)
 
         # Create a service
         service = Service(
@@ -68,18 +76,27 @@ class WebService(Construct):
                         timeout_seconds=Duration.seconds(60),
                         port=inputs.container_port,
                     ),
+                    resources=ContainerResources(
+                        cpu=CpuResources(
+                            limit=Cpu.millis(cpu),
+                            request=Cpu.millis(cpu),
+                        ),
+                        memory=MemoryResources(
+                            limit=Size.gibibytes(amount=memory),
+                            request=Size.gibibytes(amount=memory),
+                        ),
+                    ),
                 )
             ],
             restart_policy=RestartPolicy.ALWAYS,
             replicas=inputs.replicas,
-            default_selector=False,
         )
 
         # Attach the deployment to the service.
         deployment.pod_metadata.add_label(value=inputs.app_name, key="app")
-        deployment.select_by_label(value=inputs.app_name, key="app")
+
         service.add_deployment(
-            deployment=deployment,
+            depl=deployment,
             port=inputs.port,
             target_port=inputs.container_port,
             protocol=Protocol.TCP,
