@@ -14,7 +14,7 @@ spec:
       protocol: TCP
       targetPort: 5000
   selector:
-    cdk8s.io/metadata.addr: prevent-api-develop-prevent-api-prevent-api-deployment-c877198f
+    cdk8s.io/metadata.addr: prevent-api-develop-prevent-api-prevent-api-deployment-c87f2877
   type: NodePort
 ---
 apiVersion: apps/v1
@@ -30,7 +30,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      cdk8s.io/metadata.addr: prevent-api-develop-prevent-api-prevent-api-deployment-c877198f
+      cdk8s.io/metadata.addr: prevent-api-develop-prevent-api-prevent-api-deployment-c87f2877
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -40,11 +40,16 @@ spec:
     metadata:
       labels:
         app: prevent-api
-        cdk8s.io/metadata.addr: prevent-api-develop-prevent-api-prevent-api-deployment-c877198f
+        cdk8s.io/metadata.addr: prevent-api-develop-prevent-api-prevent-api-deployment-c87f2877
     spec:
       automountServiceAccountToken: true
       containers:
-        - image: 1337.dkr.ecr.eu-north-1.amazonaws.com/prevent-api:9628f958eb4a69571cfee558624fa0a33fa49c4f
+        - args:
+            - -I
+            - https://www.google.com
+          command:
+            - curl
+          image: 1337.dkr.ecr.eu-north-1.amazonaws.com/prevent-api:9628f958eb4a69571cfee558624fa0a33fa49c4f
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 3

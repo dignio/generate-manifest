@@ -29,7 +29,12 @@ jobs:
           replicas: 1
           port: 80
           container_port: 80
-          ingress: true
+          container_size: medium
+          container_command: '["curl"]'
+          container_args: '["-I", "https://www.google.com"]'
+
+          # Ingress is turned off completely
+          ingress: false
           ingress_host: prevent.dev.dignio.dev
           ingress_path: /
 

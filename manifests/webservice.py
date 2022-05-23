@@ -1,3 +1,5 @@
+import json
+
 from cdk8s import ApiObjectMetadata
 from cdk8s import Duration, Size
 
@@ -62,6 +64,8 @@ class WebService(Construct):
                     name=inputs.app_name,
                     image=inputs.docker_image,
                     port=inputs.container_port,
+                    command=json.loads(inputs.container_command),
+                    args=json.loads(inputs.container_args),
                     liveness=Probe.from_http_get(
                         path=inputs.healthcheck_path,
                         failure_threshold=3,
@@ -92,7 +96,7 @@ class WebService(Construct):
             replicas=inputs.replicas,
         )
 
-        # Attach the deployment to the service.
+        # Add pod metadata label
         deployment.pod_metadata.add_label(value=inputs.app_name, key="app")
 
         service.add_deployment(
@@ -103,6 +107,7 @@ class WebService(Construct):
         )
 
         # Add an ingress, if necessary.
+        # NOTE: currently disabled
         if inputs.ingress:
             create_ingress(webservice, inputs, {"service": service, "labels": labels})
 

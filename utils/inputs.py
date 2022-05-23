@@ -21,6 +21,8 @@ class Inputs:
     port: int
     container_port: int
     container_size: str
+    container_command: str
+    container_args: str
     cluster_name: str
     ingress: bool
     ingress_host: str
@@ -44,6 +46,8 @@ class Inputs:
             port=int(os.getenv("INPUT_PORT", "3000")),
             container_port=int(os.getenv("INPUT_CONTAINER_PORT")),
             container_size=os.getenv("INPUT_CONTAINER_SIZE"),
+            container_command=os.getenv("INPUT_CONTAINER_COMMAND"),
+            container_args=os.getenv("INPUT_CONTAINER_ARGS"),
             cluster_name=os.getenv("INPUT_CLUSTER_NAME"),
             ingress=bool(strtobool(os.getenv("INPUT_INGRESS", "false"))),
             ingress_host=os.getenv("INPUT_INGRESS_HOST"),
