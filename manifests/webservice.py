@@ -52,12 +52,17 @@ class WebService(Construct):
 
         # Create a deployment
         deployment = Deployment(
-            webservice,
+            scope=scope,
             id=f"{inputs.app_name}-deployment",
             metadata=ApiObjectMetadata(
                 name=inputs.app_name,
                 labels=labels,
                 namespace=inputs.namespace,
+            ),
+            select=True,
+            pod_metadata=ApiObjectMetadata(
+                name=inputs.app_name,
+                labels=labels,
             ),
             containers=[
                 ContainerProps(
@@ -96,15 +101,14 @@ class WebService(Construct):
             replicas=inputs.replicas,
         )
 
-        # Add pod metadata label
-        deployment.pod_metadata.add_label(value=inputs.app_name, key="app")
-
         service.add_deployment(
             depl=deployment,
             port=inputs.port,
             target_port=inputs.container_port,
             protocol=Protocol.TCP,
         )
+
+        service.add_selector(value=inputs.app_name, label="app")
 
         # Add an ingress, if necessary.
         # NOTE: currently disabled
