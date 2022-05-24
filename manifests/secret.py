@@ -21,7 +21,6 @@ def create_secrets(manifest: App, inputs: Inputs, data: dict) -> None:
         id=f"{inputs.app_name}-secret",
         metadata=ApiObjectMetadata(
             name=inputs.app_name,
-            labels=data["labels"],
             namespace=inputs.namespace,
         ),
         spec=external_secrets.ExternalSecretSpec(
