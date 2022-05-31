@@ -37,5 +37,5 @@ jobs:
 
       # === Compare the files
       - name: Compare the output with the fixture
-        run: "cmp $GITHUB_WORKSPACE/fixture/prevent-api.yaml /tmp/k8s.manifest.yaml || exit 1"
+        run: "cmp $GITHUB_WORKSPACE/fixture/prevent-demo.yaml /tmp/k8s.manifest.yaml || exit 1"
 
