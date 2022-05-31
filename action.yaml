@@ -9,9 +9,6 @@ inputs:
     description: Service type selector. I.e. webservice.
     required: true
     default: ''
-  instance:
-    description: The instance we want to build the manifest for. I.e. development.
-    required: true
   namespace:
     description: The Kubernetes namespace
     required: true
@@ -20,18 +17,14 @@ inputs:
     description: The full docker image with tag. <url>/<repo>:<tag>
     required: true
     default: ''
-  healthcheck_path:
-    description: The application health check path
-    required: false
-    default: '/'
   port:
     description: The exposed port number used by the application
     required: false
-    default: '80'
+    default: ''
   container_port:
     description: The internal port used by the application
     required: false
-    default: '80'
+    default: ''
   container_size:
     description: The size of the container. CPU/Memory. small|medium|large|xlarge
     required: false
@@ -56,34 +49,6 @@ inputs:
     description: The clustername
     required: false
     default: ''
-  ingress:
-    description: Should the application have an ingress of its own? Ask devex.
-    required: false
-    default: 'false'
-  ingress_path:
-    description: The application root URL path
-    required: false
-    default: '/'
-  ingress_host:
-    description: The host name of the application. I.e. prevent.dev.dignio.dev
-    required: false
-    default: ''
 runs:
-  using: docker
-  image: Dockerfile
-  args:
-    - ${{ inputs.app_name }}
-    - ${{ inputs.service_type }}
-    - ${{ inputs.instance }}
-    - ${{ inputs.namespace }}
-    - ${{ inputs.docker_image }}
-    - ${{ inputs.healthcheck_path }}
-    - ${{ inputs.replicas }}
-    - ${{ inputs.port }}
-    - ${{ inputs.container_port }}
-    - ${{ inputs.container_size }}
-    - ${{ inputs.secretsmanager }}
-    - ${{ inputs.cluster_name }}
-    - ${{ inputs.ingress }}
-    - ${{ inputs.ingress_path }}
-    - ${{ inputs.ingress_host }}
+  using: 'node16'
+  main: 'dist/index.js'

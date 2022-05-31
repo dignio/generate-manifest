@@ -5,7 +5,7 @@ This is a GitHub Action which can be used to generate the k8s manifest needed to
 It aims to a generic generator that can generate any manifest we'll need for deployment.
 
 ```yaml
-- uses: dignio/generate-manifest@v1
+- uses: dignio/generate-manifest@v3
   name: Generate the Kubernetes manifest
   id: generate_manifest
   needs: build_and_push
@@ -18,19 +18,17 @@ It aims to a generic generator that can generate any manifest we'll need for dep
     docker_image: <org-id>.dkr.ecr.<region>.amazonaws.com/<repo-name>:<tag>
 
     # Add secret config. Optional.
+    # Both has to be set.
     secretsmanager: true
     cluster_name: dev-k8s
 
     # These are optional
-    healthcheck_path: /healthz
     replicas: 1
     port: 80
+    container_size: medium
     container_port: 80
-
-    # Ingress generation is currently not in use
-    ingress: false
-    ingress_host: prevent.dev.dignio.dev
-    ingress_path: /
+    container_command: '["curl"]'
+    container_args: '["-I", "https://www.dignio.com"]'
 ```
 
 ## Action output
@@ -45,14 +43,14 @@ The output from this action is the generated manifest. Can be accessed by other 
 
 ## Setup
 
-```
-pipenv install
+```bash
+npm install
 ```
 
 ## Testing this action locally
 
 ```bash
-pipenv run generate
+npm run dev
 ```
 
 ## Tests

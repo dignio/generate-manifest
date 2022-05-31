@@ -14,29 +14,22 @@ jobs:
         id: generate_manifest
         with:
           # These must be specified for the action to work
-          app_name: prevent-api
+          app_name: prevent-demo
           service_type: webservice
-          instance: development
           namespace: development
-          docker_image: 1337.dkr.ecr.eu-north-1.amazonaws.com/prevent-api:9628f958eb4a69571cfee558624fa0a33fa49c4f
+          docker_image: 1337.dkr.ecr.eu-north-1.amazonaws.com/prevent-demo:1337
 
           # Add secret config
           secretsmanager: true
-          cluster_name: dev-k8s
+          cluster_name: bogus-cluster
 
           # These are optional
-          healthcheck_path: /healthz
           replicas: 1
-          port: 80
-          container_port: 80
+          port: 5000
+          container_port: 5000
           container_size: medium
           container_command: '["curl"]'
-          container_args: '["-I", "https://www.google.com"]'
-
-          # Ingress is turned off completely
-          ingress: false
-          ingress_host: prevent.dev.dignio.dev
-          ingress_path: /
+          container_args: '["-I", "https://www.dignio.com"]'
 
       # === Echo the output to see if it actually works
       - name: Echo the manifest output

@@ -1,0 +1,51 @@
+name: Check if the dist has a diff
+
+on:
+  pull_request:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  check-dist:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set Node.js 16.x
+        uses: actions/setup-node@v2.5.1
+        with:
+          node-version: 16.x
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Rebuild the dist/ directory
+        run: npm run build
+
+      - name: Compare the expected and actual dist/ directories
+        id: diff
+        run: |
+          if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ];
+          then
+            echo "Detected uncommitted changes after build.  See status below:"
+            git diff
+            echo '::set-output name=failure::true'
+          else
+            echo '::set-output name=failure::false'
+          fi
+      - name: Post information to the PR if it fails
+        uses: mshick/add-pr-comment@v1
+        if: ${{ steps.diff.outputs.failure == 'true' }}
+        with:
+          message: |
+            @${{ github.event.pull_request.user.login }} - sha: ${{ env.GITHUB_SHA }}
+            ---
+            Did you forget to add the dist folder?
+            Please run 'npm run build', and commit the dist/ folder.
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]'
+
+      - name: Exit if failure
+        if: ${{ steps.diff.outputs.failure == 'true' }}
+        run: exit 1
