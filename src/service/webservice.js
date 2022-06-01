@@ -10,7 +10,7 @@ import getResources from '../resources.js';
  * @param {*} inputs the inputs coming from the github action
  * @returns
  */
-export default function webservice(app, inputs) {
+export default function createWebservice(app, inputs) {
     const labels = {
         app: inputs.appName,
     };

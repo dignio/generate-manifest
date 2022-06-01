@@ -1,7 +1,8 @@
-import webservice from './service/webservice.js';
+import * as core from '@actions/core';
+import createWebservice from './service/webservice.js';
 
 const services = {
-    webservice,
+    webservice: createWebservice,
 };
 
 /**
@@ -17,7 +18,7 @@ export default function GenerateManifest(serviceType) {
     const service = services[serviceType];
 
     if (service === undefined) {
-        console.error(` [!] No service type with name "${serviceType}" found!`);
+        core.setFailed(` [!] No service type with name "${serviceType}" found!`);
 
         // Return a noop function
         return () => {};
