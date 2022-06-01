@@ -35015,7 +35015,7 @@ function getResources(size) {
  * @param {*} inputs the inputs coming from the github action
  * @returns
  */
-function webservice(app, inputs) {
+function createWebservice(app, inputs) {
     const labels = {
         app: inputs.appName,
     };
@@ -35152,8 +35152,9 @@ function webservice(app, inputs) {
 ;// CONCATENATED MODULE: ./src/strategy.js
 
 
+
 const services = {
-    webservice: webservice,
+    webservice: createWebservice,
 };
 
 /**
@@ -35169,7 +35170,7 @@ function GenerateManifest(serviceType) {
     const service = services[serviceType];
 
     if (service === undefined) {
-        console.error(` [!] No service type with name "${serviceType}" found!`);
+        core.setFailed(` [!] No service type with name "${serviceType}" found!`);
 
         // Return a noop function
         return () => {};
