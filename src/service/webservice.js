@@ -109,6 +109,7 @@ export default function createWebservice(app, inputs) {
     // known as a workload resource.
     // https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
     const deployment = new kplus.Deployment(chart, 'deployment', {
+        select: false,
         containers: [dockerContainer],
         restartPolicy: kplus.RestartPolicy.ALWAYS,
         replicas: inputs.replicas,
@@ -130,7 +131,7 @@ export default function createWebservice(app, inputs) {
         },
     });
 
-    deployment.select(kplus.LabelSelector.of({ labels: labels }));
+    deployment.select(kplus.LabelSelector.of({ labels: { app: inputs.appName } }));
 
     // The service to expose our pod/application to the Internet
     // https://kubernetes.io/docs/concepts/services-networking/service/

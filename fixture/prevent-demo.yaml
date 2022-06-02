@@ -38,8 +38,6 @@ spec:
   selector:
     matchLabels:
       app: prevent-demo
-      app.kubernetes.io/name: prevent-demo
-      cdk8s.io/metadata.addr: prevent-demo-webservice-deployment-c828a493
   strategy:
     rollingUpdate:
       maxSurge: 25%
