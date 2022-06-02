@@ -35018,6 +35018,7 @@ function getResources(size) {
 function createWebservice(app, inputs) {
     const labels = {
         app: inputs.appName,
+        'app.kubernetes.io/name': inputs.appName,
     };
 
     const chart = new lib.Chart(app, inputs.appName + '-webservice', {
@@ -35068,10 +35069,14 @@ function createWebservice(app, inputs) {
         // https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
         securityContext: {
             ensureNonRoot: true,
-            readOnlyRootFilesystem: false, // if we set this to true, it is not possible to write to /tmp
+            // https://hub.armo.cloud/docs/c-0017
+            // if we set this to true, it is not possible to write to /tmp
+            readOnlyRootFilesystem: false,
             privileged: false,
             user: 1000,
             group: 3000,
+            // https://hub.armo.cloud/docs/c-0016
+            allowPrivilegeEscalation: false,
         },
     };
 
@@ -35123,6 +35128,10 @@ function createWebservice(app, inputs) {
         },
         securityContext: {
             ensureNonRoot: true,
+            // https://hub.armo.cloud/docs/c-0013
+            runAsUser: 1000,
+            runAsGroup: 3000,
+            fsGroup: 2000,
         },
     });
 
@@ -35166,7 +35175,7 @@ const services = {
  * @param {string} serviceType
  * @returns {function} The service chosen by the service type
  */
-function GenerateManifest(serviceType) {
+function generateManifest(serviceType) {
     const service = services[serviceType];
 
     if (service === undefined) {
@@ -35214,7 +35223,7 @@ core.info(` [*] Creating manifest files for ${inputs.appName}`);
 
 try {
     // This will populate the app object
-    GenerateManifest(inputs.serviceType)(app, inputs);
+    generateManifest(inputs.serviceType)(app, inputs);
 
     // Base64 encode the yaml
     const buff = new Buffer.from(app.synthYaml());
