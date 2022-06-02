@@ -7,6 +7,7 @@ spec:
 metadata:
   labels:
     app: prevent-demo
+    app.kubernetes.io/name: prevent-demo
   name: prevent-demo
   namespace: development
 ---
@@ -16,6 +17,7 @@ immutable: false
 metadata:
   labels:
     app: prevent-demo
+    app.kubernetes.io/name: prevent-demo
   name: prevent-demo
   namespace: development
 stringData: {}
@@ -25,6 +27,7 @@ kind: Deployment
 metadata:
   labels:
     app: prevent-demo
+    app.kubernetes.io/name: prevent-demo
     cdk8s.io/metadata.addr: prevent-demo-webservice-deployment-c828a493
   name: prevent-demo
   namespace: development
@@ -35,6 +38,7 @@ spec:
   selector:
     matchLabels:
       app: prevent-demo
+      app.kubernetes.io/name: prevent-demo
       cdk8s.io/metadata.addr: prevent-demo-webservice-deployment-c828a493
   strategy:
     rollingUpdate:
@@ -45,6 +49,7 @@ spec:
     metadata:
       labels:
         app: prevent-demo
+        app.kubernetes.io/name: prevent-demo
         cdk8s.io/metadata.addr: prevent-demo-webservice-deployment-c828a493
       name: prevent-demo
     spec:
@@ -91,6 +96,7 @@ spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       securityContext:
+        fsGroup: 2000
         fsGroupChangePolicy: Always
         runAsNonRoot: true
       setHostnameAsFQDN: false
@@ -102,6 +108,7 @@ metadata:
     alb.ingress.kubernetes.io/target-type: ip
   labels:
     app: prevent-demo
+    app.kubernetes.io/name: prevent-demo
     cdk8s.io/metadata.addr: prevent-demo-webservice-deployment-c828a493
   name: prevent-demo
   namespace: development
