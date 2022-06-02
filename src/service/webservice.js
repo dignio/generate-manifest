@@ -7,7 +7,7 @@ import getResources from '../resources.js';
  * This function will create a webservice manifest.
  *
  * @param {object} app the app created by the main.js file
- * @param {*} inputs the inputs coming from the github action
+ * @param {object} inputs the inputs coming from the github action
  * @returns
  */
 export default function createWebservice(app, inputs) {
