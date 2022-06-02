@@ -13,6 +13,7 @@ import getResources from '../resources.js';
 export default function createWebservice(app, inputs) {
     const labels = {
         app: inputs.appName,
+        'app.kubernetes.io/name': inputs.appName,
     };
 
     const chart = new k.Chart(app, inputs.appName + '-webservice', {
@@ -63,7 +64,9 @@ export default function createWebservice(app, inputs) {
         // https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
         securityContext: {
             ensureNonRoot: true,
-            readOnlyRootFilesystem: false, // if we set this to true, it is not possible to write to /tmp
+            // https://hub.armo.cloud/docs/c-0017
+            // if we set this to true, it is not possible to write to /tmp
+            readOnlyRootFilesystem: false,
             privileged: false,
             user: 1000,
             group: 3000,
