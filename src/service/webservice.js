@@ -67,6 +67,8 @@ export default function createWebservice(app, inputs) {
             privileged: false,
             user: 1000,
             group: 3000,
+            // https://hub.armo.cloud/docs/c-0016
+            allowPrivilegeEscalation: false,
         },
     };
 
