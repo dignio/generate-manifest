@@ -35012,7 +35012,7 @@ function getResources(size) {
  * This function will create a webservice manifest.
  *
  * @param {object} app the app created by the main.js file
- * @param {*} inputs the inputs coming from the github action
+ * @param {object} inputs the inputs coming from the github action
  * @returns
  */
 function createWebservice(app, inputs) {
@@ -35114,6 +35114,7 @@ function createWebservice(app, inputs) {
     // known as a workload resource.
     // https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
     const deployment = new cdk8s_plus_22_lib.Deployment(chart, 'deployment', {
+        select: false,
         containers: [dockerContainer],
         restartPolicy: cdk8s_plus_22_lib.RestartPolicy.ALWAYS,
         replicas: inputs.replicas,
@@ -35135,7 +35136,7 @@ function createWebservice(app, inputs) {
         },
     });
 
-    deployment.select(cdk8s_plus_22_lib.LabelSelector.of({ labels: labels }));
+    deployment.select(cdk8s_plus_22_lib.LabelSelector.of({ labels: { app: inputs.appName } }));
 
     // The service to expose our pod/application to the Internet
     // https://kubernetes.io/docs/concepts/services-networking/service/
