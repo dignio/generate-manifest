@@ -35034,8 +35034,8 @@ function createWebservice(app, inputs) {
         name: inputs.appName,
         image: inputs.dockerImage,
         port: inputs.containerPort,
-        command: JSON.parse(inputs.containerCommand),
-        args: JSON.parse(inputs.containerArgs),
+        command: inputs.containerCommand,
+        args: inputs.containerArgs,
 
         // Information regarding liveness and readiness
         // https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
@@ -35213,8 +35213,8 @@ const inputs = {
     replicas: JSON.parse(core.getInput('replicas') || '1'),
     clusterName: core.getInput('cluster_name'),
     containerSize: core.getInput('container_size'),
-    containerCommand: core.getInput('container_command'),
-    containerArgs: core.getInput('container_args'),
+    containerCommand: JSON.parse(core.getInput('container_command') || null),
+    containerArgs: JSON.parse(core.getInput('container_args') || null),
     secretsmanager: JSON.parse(core.getInput('secretsmanager') || 'false'),
 };
 
