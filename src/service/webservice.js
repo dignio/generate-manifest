@@ -123,6 +123,10 @@ export default function createWebservice(app, inputs) {
         },
         securityContext: {
             ensureNonRoot: true,
+            // https://hub.armo.cloud/docs/c-0013
+            runAsUser: 1000,
+            runAsGroup: 3000,
+            fsGroup: 2000,
         },
     });
 
