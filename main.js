@@ -1,7 +1,7 @@
 import * as k from 'cdk8s';
 import * as core from '@actions/core';
 
-import GenerateManifest from './src/strategy.js';
+import generateManifest from './src/strategy.js';
 
 const DEVELOPMENT = process.env.DEVELOPMENT === 'true';
 
@@ -31,7 +31,7 @@ core.info(` [*] Creating manifest files for ${inputs.appName}`);
 
 try {
     // This will populate the app object
-    GenerateManifest(inputs.serviceType)(app, inputs);
+    generateManifest(inputs.serviceType)(app, inputs);
 
     // Base64 encode the yaml
     const buff = new Buffer.from(app.synthYaml());

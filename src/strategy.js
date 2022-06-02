@@ -14,7 +14,7 @@ const services = {
  * @param {string} serviceType
  * @returns {function} The service chosen by the service type
  */
-export default function GenerateManifest(serviceType) {
+export default function generateManifest(serviceType) {
     const service = services[serviceType];
 
     if (service === undefined) {
