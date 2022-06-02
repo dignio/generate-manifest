@@ -29,8 +29,8 @@ export default function createWebservice(app, inputs) {
         name: inputs.appName,
         image: inputs.dockerImage,
         port: inputs.containerPort,
-        command: JSON.parse(inputs.containerCommand),
-        args: JSON.parse(inputs.containerArgs),
+        command: inputs.containerCommand,
+        args: inputs.containerArgs,
 
         // Information regarding liveness and readiness
         // https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
