@@ -136,7 +136,7 @@ export default function createWebservice(app, inputs) {
     // The service to expose our pod/application to the Internet
     // https://kubernetes.io/docs/concepts/services-networking/service/
     const service = new kplus.Service(chart, 'service', {
-        ports: [{ port: 5000, targetPort: 5000 }],
+        ports: [{ port: inputs.port, targetPort: inputs.containerPort }],
         metadata: {
             name: inputs.appName,
             labels: labels,
