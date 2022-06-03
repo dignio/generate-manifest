@@ -55,24 +55,24 @@ export default function createResources(containerSize) {
     const [memory, cpu] = getResources(containerSize);
 
     // if these are not set to 0 (aka false)
-    if (cpu && memory) {
-        // Information regarding resources
-        // https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-        return {
-            resources: {
-                cpu: {
-                    limit: kplus.Cpu.millis(cpu),
-                    request: kplus.Cpu.millis(cpu),
-                },
-                memory: {
-                    limit: k.Size.gibibytes(memory),
-                    request: k.Size.gibibytes(memory),
-                },
-            },
-        };
+    if (!cpu && !memory) {
+        // Return an empty object. This will not add the resources to the container object,
+        // which means it is using the default set
+        return {};
     }
 
-    // Return an empty object. This will not add the resources to the container object,
-    // which means it is using the default set
-    return {};
+    // Information regarding resources
+    // https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    return {
+        resources: {
+            cpu: {
+                limit: kplus.Cpu.millis(cpu),
+                request: kplus.Cpu.millis(cpu),
+            },
+            memory: {
+                limit: k.Size.gibibytes(memory),
+                request: k.Size.gibibytes(memory),
+            },
+        },
+    };
 }
