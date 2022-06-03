@@ -30,11 +30,11 @@ inputs:
     required: false
     default: ''
   container_command:
-    description: The command to be passed to the docker container "['curl']"
+    description: The command to be passed to the docker container. I.e. "['curl']"
     required: false
     default: ''
   container_args:
-    description: The args to be passed to the docker container "['-I', 'https://www.google.com']"
+    description: The args to be passed to the docker container. I.e. "['-I', 'https://www.google.com']"
     required: false
     default: ''
   replicas:
