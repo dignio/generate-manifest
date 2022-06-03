@@ -1,7 +1,7 @@
 import * as k from 'cdk8s';
 import * as kplus from 'cdk8s-plus-22';
 import * as secrets from '../../imports/external-secrets.js';
-import getResources from '../resources.js';
+import createResources from '../resources.js';
 
 /**
  * This function will create a webservice manifest.
@@ -20,8 +20,6 @@ export default function createWebservice(app, inputs) {
         labels,
         namespace: inputs.namespace,
     });
-
-    const [memory, cpu] = getResources(inputs.containerSize);
 
     // The docker container configuration
     // Information https://kubernetes.io/docs/concepts/containers/
@@ -47,19 +45,6 @@ export default function createWebservice(app, inputs) {
             port: inputs.containerPort,
         }),
 
-        // Information regarding resources
-        // https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
-        resources: {
-            cpu: {
-                limit: kplus.Cpu.millis(cpu),
-                request: kplus.Cpu.millis(cpu),
-            },
-            memory: {
-                limit: k.Size.gibibytes(memory),
-                request: k.Size.gibibytes(memory),
-            },
-        },
-
         // Information regarding security context
         // https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
         securityContext: {
@@ -74,6 +59,9 @@ export default function createWebservice(app, inputs) {
             allowPrivilegeEscalation: false,
         },
     };
+
+    // assign it to the container object
+    Object.assign(dockerContainer, createResources(inputs.containerSize));
 
     if (inputs.secretsmanager && inputs.clusterName) {
         // We are using this service to handle the external secrets coming from
