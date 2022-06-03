@@ -11,16 +11,19 @@ It aims to a generic generator that can generate any manifest we'll need for dep
   needs: build_and_push
   with:
     # These must be specified for the action to work
-    app_name: prevent-ui
+    app_name: prevent-demo
     service_type: webservice
     instance: development
     namespace: development
     docker_image: <org-id>.dkr.ecr.<region>.amazonaws.com/<repo-name>:<tag>
 
-    # Add secret config. Optional.
-    # Both has to be set.
+    # To fetch secrets from AWS secrets manager, secretsmanager has to be set to true.
+    # In order to make it work you need the cluster_name be set to the EKS cluster name
+    # Example of how this works:
+    # external secrets services looks for "cluster/bogus-cluster/prevent-demo" for the secrets,
+    # then it fetches them and injects them to the container for this deployment
     secretsmanager: true
-    cluster_name: dev-k8s
+    cluster_name: bogus-cluster
 
     # These are optional
     replicas: 1
