@@ -53,6 +53,12 @@ npm install
 npm run dev
 ```
 
+## Build the dist files for the action
+
+```bash
+npm run build
+```
+
 ## Tests
 
 This action is using the `fixture/prevent-api.yaml` while running the `.github/workflows/test-action.yaml` to validate the output is correct
