@@ -1,7 +1,7 @@
 import * as k from 'cdk8s';
 import * as kplus from 'cdk8s-plus-22';
-import * as secrets from '../../imports/external-secrets.js';
 import createResources from '../resources.js';
+import createSecrets from '../secrets.js';
 
 /**
  * This function will create a webservice manifest.
@@ -63,35 +63,8 @@ export default function createWebservice(app, inputs) {
     // assign it to the container object
     Object.assign(dockerContainer, createResources(inputs.containerSize));
 
-    if (inputs.secretsmanager && inputs.clusterName) {
-        // We are using this service to handle the external secrets coming from
-        // AWS Secrets Manager: https://github.com/external-secrets/external-secrets
-        // it will fetch data from `cluster/cluster_name/app_name`.
-        // This will transform all key values to env vars for the deployment
-        new secrets.ExternalSecret(chart, 'external-secret', {
-            metadata: {
-                name: inputs.appName,
-                namespace: inputs.namespace,
-            },
-            spec: {
-                backendType: secrets.ExternalSecretSpecBackendType.SECRETS_MANAGER,
-                dataFrom: [`cluster/${inputs.clusterName}/${inputs.appName}`],
-            },
-        });
-
-        // Information regarding secrets
-        // https://kubernetes.io/docs/concepts/configuration/secret/
-        const secret = new kplus.Secret(chart, 'secret', {
-            metadata: {
-                name: inputs.appName,
-            },
-        });
-
-        const secretSource = kplus.Env.fromSecret(secret);
-
-        // assign the secrets created in kubernetes by external secret to the container
-        Object.assign(dockerContainer, { envFrom: [secretSource] });
-    }
+    // assign the secrets created in kubernetes by external secret to the container
+    Object.assign(dockerContainer, createSecrets(chart, inputs));
 
     // This is the main object for our deployment manifest. Also
     // known as a workload resource.
