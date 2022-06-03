@@ -46,7 +46,7 @@ inputs:
     required: false
     default: 'false'
   cluster_name:
-    description: The clustername
+    description: The cluster name. This is used by external secrets to fetch secrets from AWS based on this key "cluster/<cluster_name>/<app_name>"
     required: false
     default: ''
 runs:
