@@ -57,7 +57,7 @@ export default function createResources(containerSize) {
     // if these are not set to 0 (aka false)
     if (!cpu && !memory) {
         // Return an empty object. This will not add the resources to the container object,
-        // which means it is using the default set
+        // which means it is using the default set by fargate.
         return {};
     }
 
