@@ -19,7 +19,7 @@ const inputs = {
     // Optional
     replicas: JSON.parse(core.getInput('replicas') || '1'),
     clusterName: core.getInput('cluster_name') || null,
-    containerSize: core.getInput('container_size') || 'small',
+    containerSize: core.getInput('container_size') || null,
     containerCommand: JSON.parse(core.getInput('container_command') || null),
     containerArgs: JSON.parse(core.getInput('container_args') || null),
     secretsmanager: JSON.parse(core.getInput('secretsmanager') || 'false'),
