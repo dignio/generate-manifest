@@ -92,6 +92,9 @@ export default function createWebservice(app, inputs) {
         },
     });
 
+    // This line will set the selector for the deployment to "app: <app_name>" to be static and not dynamic.
+    // If it is dynamic, it will be a conflict with kubernetes immutability for deployments, and will block
+    // the deployment from being deployed
     deployment.select(kplus.LabelSelector.of({ labels: { app: inputs.appName } }));
 
     // The service to expose our pod/application to the Internet
