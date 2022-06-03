@@ -52,6 +52,9 @@ npm install
 
 ## Testing this action locally
 
+This command will use nodemon and the .env file to create a manifest for you. The manifest will be printed to the terminal,
+and it will hot reload for continuous feedback.
+
 ```bash
 npm run dev
 ```
