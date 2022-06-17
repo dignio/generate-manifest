@@ -51,6 +51,15 @@ spec:
         cdk8s.io/metadata.addr: prevent-demo-webservice-deployment-c828a493
       name: prevent-demo
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: instance
+                    operator: In
+                    values:
+                      - previews
       automountServiceAccountToken: true
       containers:
         - args:

@@ -13,6 +13,9 @@ inputs:
     description: The Kubernetes namespace
     required: true
     default: development
+  instance:
+    description: The instance running. Example here would be i.e. previews, development, api. It is used to select which node group we want to run the pod.
+    required: true
   docker_image:
     description: The full docker image with tag. <url>/<repo>:<tag>
     required: true
@@ -49,6 +52,10 @@ inputs:
     description: The cluster name. This is used by external secrets to fetch secrets from AWS based on this key "cluster/<cluster_name>/<app_name>"
     required: false
     default: ''
+  fargate:
+    description: If fargate should be enabled. This input will be removed when we have migrated to node groups.
+    required: false
+    default: 'true'
 runs:
   using: 'node16'
   main: 'dist/index.js'

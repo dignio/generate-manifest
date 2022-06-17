@@ -13,7 +13,7 @@ It aims to a generic generator that can generate any manifest we'll need for dep
     # These must be specified for the action to work
     app_name: prevent-demo
     service_type: webservice
-    instance: development
+    instance: previews
     namespace: development
     docker_image: <org-id>.dkr.ecr.<region>.amazonaws.com/<repo-name>:<tag>
 
@@ -32,6 +32,8 @@ It aims to a generic generator that can generate any manifest we'll need for dep
     container_port: 80
     container_command: '["curl"]'
     container_args: '["-I", "https://www.dignio.com"]'
+    # Only if your instances is running on fargate
+    fargate: true
 ```
 
 ## Action output
