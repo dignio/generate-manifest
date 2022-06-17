@@ -18,12 +18,14 @@ jobs:
           service_type: webservice
           namespace: development
           docker_image: 1337.dkr.ecr.eu-north-1.amazonaws.com/prevent-demo:1337
+          instance: previews
 
           # Add secret config
           secretsmanager: true
           cluster_name: bogus-cluster
 
           # These are optional
+          fargate: false
           replicas: 1
           port: 5000
           container_port: 5000

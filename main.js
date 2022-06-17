@@ -15,6 +15,7 @@ const inputs = {
     dockerImage: core.getInput('docker_image', { required: true }),
     containerPort: JSON.parse(core.getInput('container_port', { required: true })),
     port: JSON.parse(core.getInput('port', { required: true })),
+    instance: core.getInput('instance', { required: true }),
 
     // Optional
     replicas: JSON.parse(core.getInput('replicas') || '1'),
@@ -23,6 +24,7 @@ const inputs = {
     containerCommand: JSON.parse(core.getInput('container_command') || null),
     containerArgs: JSON.parse(core.getInput('container_args') || null),
     secretsmanager: JSON.parse(core.getInput('secretsmanager') || 'false'),
+    fargate: JSON.parse(core.getInput('fargate') || 'true'),
 };
 
 const app = new k.App();

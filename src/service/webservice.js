@@ -92,6 +92,12 @@ export default function createWebservice(app, inputs) {
         },
     });
 
+    if (!inputs.fargate) {
+        deployment.scheduling.attract(
+            kplus.Node.labeled(kplus.NodeLabelQuery.is('instance', inputs.instance))
+        );
+    }
+
     // This line will set the selector for the deployment to "app: <app_name>" to be static and not dynamic.
     // If it is dynamic, it will be a conflict with kubernetes immutability for deployments, and will block
     // the deployment from being deployed
