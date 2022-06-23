@@ -19,7 +19,7 @@ spec:
                       - key: instance
                         operator: In
                         values:
-                          - development
+                          - previews
           containers:
             - envFrom:
                 - secretRef:
@@ -34,7 +34,7 @@ kind: ExternalSecret
 spec:
   backendType: secretsManager
   dataFrom:
-    - cluster/dev-k8s/prevent-demo
+    - cluster/prevent-demo/prevent-demo
 metadata:
   labels:
     app: prevent-demo
