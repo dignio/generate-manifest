@@ -56,6 +56,10 @@ inputs:
     description: If fargate should be enabled. This input will be removed when we have migrated to node groups.
     required: false
     default: 'true'
+  schedule:
+    description: A cronjob schedule. I.e. "0 * * * *"
+    required: false
+    default: ''
 runs:
   using: 'node16'
   main: 'dist/index.js'
