@@ -10,7 +10,7 @@ import createSecrets from '../secrets.js';
  * @returns {object} the node group selection object
  */
 function assignToNodeGroup(inputs) {
-    if (inputs.fargate) {
+    if (!inputs.nodegroup || inputs.fargate) {
         return {};
     }
 
@@ -22,7 +22,11 @@ function assignToNodeGroup(inputs) {
                     nodeSelectorTerms: [
                         {
                             matchExpressions: [
-                                { key: 'instance', operator: 'In', values: [inputs.instance] },
+                                {
+                                    key: 'instance',
+                                    operator: 'In',
+                                    values: [inputs.nodegroup || inputs.instance],
+                                },
                             ],
                         },
                     ],

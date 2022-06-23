@@ -14,6 +14,7 @@ const inputs = {
     serviceType: core.getInput('service_type', { required: true }),
     dockerImage: core.getInput('docker_image', { required: true }),
     instance: core.getInput('instance', { required: true }),
+    nodegroup: core.getInput('nodegroup', { required: true }),
 
     // Optional
     containerPort: JSON.parse(core.getInput('container_port') || null),
@@ -25,7 +26,6 @@ const inputs = {
     containerArgs: JSON.parse(core.getInput('container_args') || null),
     secretsmanager: JSON.parse(core.getInput('secretsmanager') || 'false'),
     fargate: JSON.parse(core.getInput('fargate') || 'true'),
-
     // The cronjob schedule
     // https://crontab.guru/
     schedule: core.getInput('schedule') || null,

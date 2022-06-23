@@ -50,9 +50,11 @@ export default function createWebservice(app, inputs) {
         },
     });
 
-    if (!inputs.fargate) {
+    if (inputs.nodegroup || !inputs.fargate) {
         deployment.scheduling.attract(
-            kplus.Node.labeled(kplus.NodeLabelQuery.is('instance', inputs.instance))
+            kplus.Node.labeled(
+                kplus.NodeLabelQuery.is('instance', inputs.nodegroup || inputs.instance)
+            )
         );
     }
 

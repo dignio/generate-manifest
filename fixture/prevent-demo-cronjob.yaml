@@ -19,7 +19,7 @@ spec:
                       - key: instance
                         operator: In
                         values:
-                          - previews
+                          - ng-development
           containers:
             - envFrom:
                 - secretRef:

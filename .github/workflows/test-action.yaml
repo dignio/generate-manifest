@@ -19,6 +19,7 @@ jobs:
           namespace: development
           docker_image: 1337.dkr.ecr.eu-north-1.amazonaws.com/prevent-demo:1337
           instance: previews
+          nodegroup: ng-development
 
           # Add secret config
           secretsmanager: true
@@ -57,6 +58,7 @@ jobs:
           namespace: development
           docker_image: 1337.dkr.ecr.eu-north-1.amazonaws.com/prevent-demo:1337
           instance: previews
+          nodegroup: ng-development
 
           # Add secret config
           secretsmanager: true

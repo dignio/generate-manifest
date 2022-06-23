@@ -20,6 +20,9 @@ inputs:
     description: The full docker image with tag. <url>/<repo>:<tag>
     required: true
     default: ''
+  nodegroup:
+    description: The node group it should be deployed to. Based on the Node Group instance tag. I.e. ng-development, ng-staging
+    required: false
   port:
     description: The exposed port number used by the application
     required: false

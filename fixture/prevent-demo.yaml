@@ -59,7 +59,7 @@ spec:
                   - key: instance
                     operator: In
                     values:
-                      - previews
+                      - ng-development
       automountServiceAccountToken: true
       containers:
         - args:
