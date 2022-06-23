@@ -35214,9 +35214,11 @@ function createWebservice(app, inputs) {
         },
     });
 
-    if (!inputs.fargate) {
+    if (inputs.nodegroup || !inputs.fargate) {
         deployment.scheduling.attract(
-            cdk8s_plus_22_lib.Node.labeled(cdk8s_plus_22_lib.NodeLabelQuery.is('instance', inputs.instance))
+            cdk8s_plus_22_lib.Node.labeled(
+                cdk8s_plus_22_lib.NodeLabelQuery.is('instance', inputs.nodegroup || inputs.instance)
+            )
         );
     }
 
@@ -35278,7 +35280,7 @@ class CronJob extends lib.ApiObject {
  * @returns {object} the node group selection object
  */
 function assignToNodeGroup(inputs) {
-    if (inputs.fargate) {
+    if (!inputs.nodegroup || inputs.fargate) {
         return {};
     }
 
@@ -35290,7 +35292,11 @@ function assignToNodeGroup(inputs) {
                     nodeSelectorTerms: [
                         {
                             matchExpressions: [
-                                { key: 'instance', operator: 'In', values: [inputs.instance] },
+                                {
+                                    key: 'instance',
+                                    operator: 'In',
+                                    values: [inputs.nodegroup || inputs.instance],
+                                },
                             ],
                         },
                     ],
@@ -35407,6 +35413,7 @@ const inputs = {
     serviceType: core.getInput('service_type', { required: true }),
     dockerImage: core.getInput('docker_image', { required: true }),
     instance: core.getInput('instance', { required: true }),
+    nodegroup: core.getInput('nodegroup', { required: true }),
 
     // Optional
     containerPort: JSON.parse(core.getInput('container_port') || null),
@@ -35418,7 +35425,6 @@ const inputs = {
     containerArgs: JSON.parse(core.getInput('container_args') || null),
     secretsmanager: JSON.parse(core.getInput('secretsmanager') || 'false'),
     fargate: JSON.parse(core.getInput('fargate') || 'true'),
-
     // The cronjob schedule
     // https://crontab.guru/
     schedule: core.getInput('schedule') || null,
