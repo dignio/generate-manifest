@@ -1,0 +1,54 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app: prevent-demo
+    app.kubernetes.io/name: prevent-demo
+  name: prevent-demo
+  namespace: development
+spec:
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                  - matchExpressions:
+                      - key: instance
+                        operator: In
+                        values:
+                          - development
+          containers:
+            - envFrom:
+                - secretRef:
+                    name: prevent-demo
+              image: 1337.dkr.ecr.eu-north-1.amazonaws.com/prevent-demo:1337
+              name: prevent-demo
+          restartPolicy: Never
+  schedule: 0 * * * *
+---
+apiVersion: kubernetes-client.io/v1
+kind: ExternalSecret
+spec:
+  backendType: secretsManager
+  dataFrom:
+    - cluster/dev-k8s/prevent-demo
+metadata:
+  labels:
+    app: prevent-demo
+    app.kubernetes.io/name: prevent-demo
+  name: prevent-demo
+  namespace: development
+---
+apiVersion: v1
+kind: Secret
+immutable: false
+metadata:
+  labels:
+    app: prevent-demo
+    app.kubernetes.io/name: prevent-demo
+  name: prevent-demo
+  namespace: development
+stringData: {}
