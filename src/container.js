@@ -1,6 +1,5 @@
 import * as k from 'cdk8s';
 import * as kplus from 'cdk8s-plus-22';
-import { toJson_ObjectFieldSelector } from 'cdk8s-plus-22/lib/imports/k8s.js';
 import createResources from './resources.js';
 import createSecrets from './secrets.js';
 
