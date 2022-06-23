@@ -1,7 +1,6 @@
 import * as k from 'cdk8s';
 import * as kplus from 'cdk8s-plus-22';
-import createResources from '../resources.js';
-import createSecrets from '../secrets.js';
+import createContainer from '../container.js';
 
 /**
  * This function will create a webservice manifest.
@@ -23,48 +22,7 @@ export default function createWebservice(app, inputs) {
 
     // The docker container configuration
     // Information https://kubernetes.io/docs/concepts/containers/
-    const dockerContainer = {
-        name: inputs.appName,
-        image: inputs.dockerImage,
-        port: inputs.containerPort,
-        command: inputs.containerCommand,
-        args: inputs.containerArgs,
-
-        // Information regarding liveness and readiness
-        // https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
-        liveness: kplus.Probe.fromTcpSocket({
-            failureThreshold: 3,
-            periodSeconds: k.Duration.seconds(15),
-            timeoutSeconds: k.Duration.seconds(60),
-            port: inputs.containerPort,
-        }),
-        readiness: kplus.Probe.fromTcpSocket({
-            failureThreshold: 3,
-            periodSeconds: k.Duration.seconds(15),
-            timeoutSeconds: k.Duration.seconds(60),
-            port: inputs.containerPort,
-        }),
-
-        // Information regarding security context
-        // https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-        securityContext: {
-            ensureNonRoot: true,
-            // https://hub.armo.cloud/docs/c-0017
-            // if we set this to true, it is not possible to write to /tmp
-            readOnlyRootFilesystem: false,
-            privileged: false,
-            user: 1000,
-            group: 3000,
-            // https://hub.armo.cloud/docs/c-0016
-            allowPrivilegeEscalation: false,
-        },
-    };
-
-    // assign it to the container object
-    Object.assign(dockerContainer, createResources(inputs.containerSize));
-
-    // assign the secrets created in kubernetes by external secret to the container
-    Object.assign(dockerContainer, createSecrets(chart, inputs));
+    const dockerContainer = createContainer(chart, inputs);
 
     // This is the main object for our deployment manifest. Also
     // known as a workload resource.

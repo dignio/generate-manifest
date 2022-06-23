@@ -13,11 +13,11 @@ const inputs = {
     namespace: core.getInput('namespace', { required: true }),
     serviceType: core.getInput('service_type', { required: true }),
     dockerImage: core.getInput('docker_image', { required: true }),
-    containerPort: JSON.parse(core.getInput('container_port', { required: true })),
-    port: JSON.parse(core.getInput('port', { required: true })),
     instance: core.getInput('instance', { required: true }),
 
     // Optional
+    containerPort: JSON.parse(core.getInput('container_port') || null),
+    port: JSON.parse(core.getInput('port') || null),
     replicas: JSON.parse(core.getInput('replicas') || '1'),
     clusterName: core.getInput('cluster_name') || null,
     containerSize: core.getInput('container_size') || null,
@@ -25,6 +25,10 @@ const inputs = {
     containerArgs: JSON.parse(core.getInput('container_args') || null),
     secretsmanager: JSON.parse(core.getInput('secretsmanager') || 'false'),
     fargate: JSON.parse(core.getInput('fargate') || 'true'),
+
+    // The cronjob schedule
+    // https://crontab.guru/
+    schedule: core.getInput('schedule') || null,
 };
 
 const app = new k.App();
@@ -46,5 +50,7 @@ try {
         console.log(app.synthYaml());
     }
 } catch (error) {
+    console.error(error);
+
     core.setFailed(error.message);
 }
