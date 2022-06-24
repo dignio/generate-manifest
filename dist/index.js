@@ -35280,7 +35280,7 @@ class CronJob extends lib.ApiObject {
  * @returns {object} the node group selection object
  */
 function assignToNodeGroup(inputs) {
-    if (!inputs.nodegroup || inputs.fargate) {
+    if (!inputs.nodegroup && inputs.fargate) {
         return {};
     }
 
