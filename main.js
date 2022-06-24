@@ -14,9 +14,9 @@ const inputs = {
     serviceType: core.getInput('service_type', { required: true }),
     dockerImage: core.getInput('docker_image', { required: true }),
     instance: core.getInput('instance', { required: true }),
-    nodegroup: core.getInput('nodegroup', { required: true }),
 
     // Optional
+    nodegroup: core.getInput('nodegroup', { required: false }),
     containerPort: JSON.parse(core.getInput('container_port') || null),
     port: JSON.parse(core.getInput('port') || null),
     replicas: JSON.parse(core.getInput('replicas') || '1'),
