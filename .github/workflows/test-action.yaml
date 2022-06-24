@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [ opened, synchronize ]
 jobs:
-  test-generate-manifest:
+  test-generate-manifest-webservice:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -19,6 +19,7 @@ jobs:
           namespace: development
           docker_image: 1337.dkr.ecr.eu-north-1.amazonaws.com/prevent-demo:1337
           instance: previews
+          nodegroup: ng-development
 
           # Add secret config
           secretsmanager: true
@@ -35,9 +36,42 @@ jobs:
 
       # === Echo the output to see if it actually works
       - name: Echo the manifest output
-        run: "echo ${{steps.generate_manifest.outputs.manifest}} | base64 --decode >> /tmp/k8s.manifest.yaml"
+        run: "echo ${{steps.generate_manifest.outputs.manifest}} | base64 --decode >> /tmp/k8s-webservice.manifest.yaml"
 
       # === Compare the files
       - name: Compare the output with the fixture
-        run: "cmp $GITHUB_WORKSPACE/fixture/prevent-demo.yaml /tmp/k8s.manifest.yaml || exit 1"
+        run: "cmp $GITHUB_WORKSPACE/fixture/prevent-demo.yaml /tmp/k8s-webservice.manifest.yaml || exit 1"
 
+  test-generate-manifest-cronjob:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # === Test against the repo's copy of the action
+      - uses: ./
+        name: Generate the Kubernetes manifest
+        id: generate_manifest
+        with:
+          # These must be specified for the action to work
+          app_name: prevent-demo
+          service_type: cronjob
+          namespace: development
+          docker_image: 1337.dkr.ecr.eu-north-1.amazonaws.com/prevent-demo:1337
+          instance: previews
+          nodegroup: ng-development
+
+          # Add secret config
+          secretsmanager: true
+          cluster_name: prevent-demo
+
+          # These are optional
+          fargate: false
+          schedule: "0 * * * *"
+
+      # === Echo the output to see if it actually works
+      - name: Echo the manifest output
+        run: "echo ${{steps.generate_manifest.outputs.manifest}} | base64 --decode >> /tmp/k8s-cronjob.manifest.yaml"
+
+      # === Compare the files
+      - name: Compare the output with the fixture
+        run: "cmp $GITHUB_WORKSPACE/fixture/prevent-demo-cronjob.yaml /tmp/k8s-cronjob.manifest.yaml || exit 1"

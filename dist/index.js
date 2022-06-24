@@ -35081,8 +35081,87 @@ function createSecrets(chart, inputs) {
     return { envFrom: [secretSource] };
 }
 
-;// CONCATENATED MODULE: ./src/service/webservice.js
+;// CONCATENATED MODULE: ./src/container.js
 
+
+
+
+
+/**
+ * This function will create the docker container object.
+ *
+ * @param {object} chart the chart
+ * @param {object} inputs the inputs coming from the github action
+ * @returns {object} the docker container object
+ */
+function createContainer(chart, inputs) {
+    const dockerContainer = {
+        name: inputs.appName,
+        image: inputs.dockerImage,
+        command: inputs.containerCommand,
+        args: inputs.containerArgs,
+    };
+
+    // The following is not available for the cronjob docker container
+    if (inputs.serviceType !== 'cronjob') {
+        Object.assign(dockerContainer, {
+            port: inputs.containerPort,
+        });
+
+        // Information regarding liveness and readiness
+        // https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+        Object.assign(dockerContainer, {
+            liveness: cdk8s_plus_22_lib.Probe.fromTcpSocket({
+                failureThreshold: 3,
+                periodSeconds: lib.Duration.seconds(15),
+                timeoutSeconds: lib.Duration.seconds(60),
+                port: inputs.containerPort,
+            }),
+            readiness: cdk8s_plus_22_lib.Probe.fromTcpSocket({
+                failureThreshold: 3,
+                periodSeconds: lib.Duration.seconds(15),
+                timeoutSeconds: lib.Duration.seconds(60),
+                port: inputs.containerPort,
+            }),
+        });
+
+        // Information regarding security context
+        // https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+        Object.assign(dockerContainer, {
+            securityContext: {
+                ensureNonRoot: true,
+                // https://hub.armo.cloud/docs/c-0017
+                // if we set this to true, it is not possible to write to /tmp
+                readOnlyRootFilesystem: false,
+                privileged: false,
+                user: 1000,
+                group: 3000,
+                // https://hub.armo.cloud/docs/c-0016
+                allowPrivilegeEscalation: false,
+            },
+        });
+
+        // assign it to the container object
+        Object.assign(dockerContainer, createResources(inputs.containerSize));
+
+        // create the secret manifest files
+        Object.assign(dockerContainer, createSecrets(chart, inputs));
+    }
+
+    // For the special handling of cronjobs
+    if (inputs.serviceType === 'cronjob') {
+        // assign the secrets if activated
+        if (inputs.secretsmanager && inputs.clusterName) {
+            Object.assign(dockerContainer, {
+                envFrom: [{ secretRef: { name: inputs.appName } }],
+            });
+        }
+    }
+
+    return dockerContainer;
+}
+
+;// CONCATENATED MODULE: ./src/service/webservice.js
 
 
 
@@ -35107,48 +35186,7 @@ function createWebservice(app, inputs) {
 
     // The docker container configuration
     // Information https://kubernetes.io/docs/concepts/containers/
-    const dockerContainer = {
-        name: inputs.appName,
-        image: inputs.dockerImage,
-        port: inputs.containerPort,
-        command: inputs.containerCommand,
-        args: inputs.containerArgs,
-
-        // Information regarding liveness and readiness
-        // https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
-        liveness: cdk8s_plus_22_lib.Probe.fromTcpSocket({
-            failureThreshold: 3,
-            periodSeconds: lib.Duration.seconds(15),
-            timeoutSeconds: lib.Duration.seconds(60),
-            port: inputs.containerPort,
-        }),
-        readiness: cdk8s_plus_22_lib.Probe.fromTcpSocket({
-            failureThreshold: 3,
-            periodSeconds: lib.Duration.seconds(15),
-            timeoutSeconds: lib.Duration.seconds(60),
-            port: inputs.containerPort,
-        }),
-
-        // Information regarding security context
-        // https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-        securityContext: {
-            ensureNonRoot: true,
-            // https://hub.armo.cloud/docs/c-0017
-            // if we set this to true, it is not possible to write to /tmp
-            readOnlyRootFilesystem: false,
-            privileged: false,
-            user: 1000,
-            group: 3000,
-            // https://hub.armo.cloud/docs/c-0016
-            allowPrivilegeEscalation: false,
-        },
-    };
-
-    // assign it to the container object
-    Object.assign(dockerContainer, createResources(inputs.containerSize));
-
-    // assign the secrets created in kubernetes by external secret to the container
-    Object.assign(dockerContainer, createSecrets(chart, inputs));
+    const dockerContainer = createContainer(chart, inputs);
 
     // This is the main object for our deployment manifest. Also
     // known as a workload resource.
@@ -35176,9 +35214,11 @@ function createWebservice(app, inputs) {
         },
     });
 
-    if (!inputs.fargate) {
+    if (inputs.nodegroup || !inputs.fargate) {
         deployment.scheduling.attract(
-            cdk8s_plus_22_lib.Node.labeled(cdk8s_plus_22_lib.NodeLabelQuery.is('instance', inputs.instance))
+            cdk8s_plus_22_lib.Node.labeled(
+                cdk8s_plus_22_lib.NodeLabelQuery.is('instance', inputs.nodegroup || inputs.instance)
+            )
         );
     }
 
@@ -35208,12 +35248,129 @@ function createWebservice(app, inputs) {
     return app;
 }
 
+;// CONCATENATED MODULE: ./imports/cronjob.js
+// generated by cdk8s
+
+/**
+ * CronJob represents the configuration of a single cron job.
+ */
+class CronJob extends lib.ApiObject {
+    constructor(scope, ns, options) {
+        super(
+            scope,
+            ns,
+            Object.assign(Object.assign({}, options), {
+                kind: 'CronJob',
+                apiVersion: 'batch/v1',
+            })
+        );
+    }
+}
+
+;// CONCATENATED MODULE: ./src/service/cronjob.js
+
+
+
+
+
+/**
+ * This function will create the node group selection
+ *
+ * @param {object} inputs the inputs coming from the github action
+ * @returns {object} the node group selection object
+ */
+function assignToNodeGroup(inputs) {
+    if (!inputs.nodegroup && inputs.fargate) {
+        return {};
+    }
+
+    // If we are not running on fargate, select the AWS EKS Node Group
+    return {
+        affinity: {
+            nodeAffinity: {
+                requiredDuringSchedulingIgnoredDuringExecution: {
+                    nodeSelectorTerms: [
+                        {
+                            matchExpressions: [
+                                {
+                                    key: 'instance',
+                                    operator: 'In',
+                                    values: [inputs.nodegroup || inputs.instance],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            },
+        },
+    };
+}
+
+/**
+ * This function will create a cronjob manifest.
+ *
+ * @param {object} app the app created by the main.js file
+ * @param {object} inputs the inputs coming from the github action
+ * @returns {object} app
+ */
+function createCronJob(app, inputs) {
+    const labels = {
+        app: inputs.appName,
+        'app.kubernetes.io/name': inputs.appName,
+    };
+
+    const chart = new lib.Chart(app, inputs.appName + '-cronjob', {
+        labels,
+        namespace: inputs.namespace,
+    });
+
+    // The docker container configuration
+    // Information https://kubernetes.io/docs/concepts/containers/
+    const dockerContainer = createContainer(chart, inputs);
+
+    // This is the main object for our cronjob manifest. Also known as a workload resource.
+    // https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/
+    const cronJobProperties = {
+        metadata: {
+            name: inputs.appName,
+            labels: labels,
+            namespace: inputs.namespace,
+        },
+        spec: {
+            schedule: inputs.schedule,
+            jobTemplate: {
+                spec: {
+                    template: {
+                        spec: {
+                            ...assignToNodeGroup(inputs),
+                            // Never restart the cronjob if it fails,
+                            // wait until the next run.
+                            restartPolicy: 'Never',
+                            containers: [dockerContainer],
+                        },
+                    },
+                },
+            },
+        },
+    };
+
+    new CronJob(chart, 'cronjob', cronJobProperties);
+
+    // create the secret manifest files
+    createSecrets(chart, inputs);
+
+    // Return the manifest object
+    return app;
+}
+
 ;// CONCATENATED MODULE: ./src/strategy.js
+
 
 
 
 const services = {
     webservice: createWebservice,
+    cronjob: createCronJob,
 };
 
 /**
@@ -35255,11 +35412,12 @@ const inputs = {
     namespace: core.getInput('namespace', { required: true }),
     serviceType: core.getInput('service_type', { required: true }),
     dockerImage: core.getInput('docker_image', { required: true }),
-    containerPort: JSON.parse(core.getInput('container_port', { required: true })),
-    port: JSON.parse(core.getInput('port', { required: true })),
     instance: core.getInput('instance', { required: true }),
+    nodegroup: core.getInput('nodegroup', { required: true }),
 
     // Optional
+    containerPort: JSON.parse(core.getInput('container_port') || null),
+    port: JSON.parse(core.getInput('port') || null),
     replicas: JSON.parse(core.getInput('replicas') || '1'),
     clusterName: core.getInput('cluster_name') || null,
     containerSize: core.getInput('container_size') || null,
@@ -35267,6 +35425,9 @@ const inputs = {
     containerArgs: JSON.parse(core.getInput('container_args') || null),
     secretsmanager: JSON.parse(core.getInput('secretsmanager') || 'false'),
     fargate: JSON.parse(core.getInput('fargate') || 'true'),
+    // The cronjob schedule
+    // https://crontab.guru/
+    schedule: core.getInput('schedule') || null,
 };
 
 const app = new lib.App();
@@ -35288,6 +35449,8 @@ try {
         console.log(app.synthYaml());
     }
 } catch (error) {
+    console.error(error);
+
     core.setFailed(error.message);
 }
 
