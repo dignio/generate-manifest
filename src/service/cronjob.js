@@ -10,7 +10,7 @@ import createSecrets from '../secrets.js';
  * @returns {object} the node group selection object
  */
 function assignToNodeGroup(inputs) {
-    if (!inputs.nodegroup || inputs.fargate) {
+    if (!inputs.nodegroup && inputs.fargate) {
         return {};
     }
 
