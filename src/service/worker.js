@@ -20,12 +20,9 @@ export default function createWorker(app, inputs) {
         namespace: inputs.namespace,
     });
 
-    // The docker container configuration
     // Information https://kubernetes.io/docs/concepts/containers/
     const dockerContainer = createContainer(chart, inputs);
 
-    // This is the main object for our deployment manifest. Also
-    // known as a workload resource.
     // https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
     const deployment = new kplus.Deployment(chart, 'deployment', {
         select: false,
