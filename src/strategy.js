@@ -1,10 +1,12 @@
 import * as core from '@actions/core';
 import createWebservice from './service/webservice.js';
 import createCronJob from './service/cronjob.js';
+import createWorker from './service/worker.js';
 
 const services = {
     webservice: createWebservice,
     cronjob: createCronJob,
+    worker: createWorker,
 };
 
 /**

@@ -18,8 +18,8 @@ export default function createContainer(chart, inputs) {
         args: inputs.containerArgs,
     };
 
-    // The following is not available for the cronjob docker container
-    if (inputs.serviceType !== 'cronjob') {
+    // The following is not available for the cronjob and worker docker container
+    if (['cronjob', 'worker'].indexOf(inputs.serviceType) === -1) {
         Object.assign(dockerContainer, {
             port: inputs.containerPort,
         });
@@ -56,7 +56,9 @@ export default function createContainer(chart, inputs) {
                 allowPrivilegeEscalation: false,
             },
         });
+    }
 
+    if (inputs.serviceType !== 'cronjob') {
         // assign it to the container object
         Object.assign(dockerContainer, createResources(inputs.containerSize));
 
