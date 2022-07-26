@@ -98,6 +98,10 @@ jobs:
           secretsmanager: true
           cluster_name: prevent-demo
 
+          # container config
+          container_command: '["curl"]'
+          container_args: '["-I", "https://www.dignio.com"]'
+
       # === Echo the output to see if it actually works
       - name: Echo the manifest output
         run: "echo ${{steps.generate_manifest.outputs.manifest}} | base64 --decode >> /tmp/k8s-cronjob.manifest.yaml"
