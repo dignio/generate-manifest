@@ -96,7 +96,7 @@ jobs:
 
           # Add secret config
           secretsmanager: true
-          cluster_name: prevent-demo
+          cluster_name: bogus-cluster
 
           # container config
           container_command: '["curl"]'
