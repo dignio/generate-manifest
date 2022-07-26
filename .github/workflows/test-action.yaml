@@ -104,8 +104,8 @@ jobs:
 
       # === Echo the output to see if it actually works
       - name: Echo the manifest output
-        run: "echo ${{steps.generate_manifest.outputs.manifest}} | base64 --decode >> /tmp/k8s-cronjob.manifest.yaml"
+        run: "echo ${{steps.generate_manifest.outputs.manifest}} | base64 --decode >> /tmp/k8s-worker.manifest.yaml"
 
       # === Compare the files
       - name: Compare the output with the fixture
-        run: "cmp $GITHUB_WORKSPACE/fixture/prevent-demo-cronjob.yaml /tmp/k8s-cronjob.manifest.yaml || exit 1"
+        run: "cmp $GITHUB_WORKSPACE/fixture/prevent-demo-worker.yaml /tmp/k8s-worker.manifest.yaml || exit 1"
