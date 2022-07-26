@@ -35102,8 +35102,8 @@ function createContainer(chart, inputs) {
         args: inputs.containerArgs,
     };
 
-    // The following is not available for the cronjob docker container
-    if (inputs.serviceType !== 'cronjob') {
+    // The following is not available for the cronjob and worker docker container
+    if (['cronjob', 'worker'].indexOf(inputs.serviceType) === -1) {
         Object.assign(dockerContainer, {
             port: inputs.containerPort,
         });
@@ -35140,7 +35140,9 @@ function createContainer(chart, inputs) {
                 allowPrivilegeEscalation: false,
             },
         });
+    }
 
+    if (inputs.serviceType !== 'cronjob') {
         // assign it to the container object
         Object.assign(dockerContainer, createResources(inputs.containerSize));
 
@@ -35363,7 +35365,71 @@ function createCronJob(app, inputs) {
     return app;
 }
 
+;// CONCATENATED MODULE: ./src/service/worker.js
+
+
+
+
+/**
+ * This function will create a worker manifest.
+ *
+ * @param {object} app the app created by the main.js file
+ * @param {object} inputs the inputs coming from the github action
+ * @returns
+ */
+function createWorker(app, inputs) {
+    const labels = {
+        app: inputs.appName,
+        'app.kubernetes.io/name': inputs.appName,
+    };
+
+    const chart = new lib.Chart(app, inputs.appName + '-worker', {
+        labels,
+        namespace: inputs.namespace,
+    });
+
+    // The docker container configuration
+    // Information https://kubernetes.io/docs/concepts/containers/
+    const dockerContainer = createContainer(chart, inputs);
+
+    // This is the main object for our deployment manifest. Also
+    // known as a workload resource.
+    // https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+    const deployment = new cdk8s_plus_22_lib.Deployment(chart, 'deployment', {
+        select: false,
+        containers: [dockerContainer],
+        restartPolicy: cdk8s_plus_22_lib.RestartPolicy.ALWAYS,
+        replicas: inputs.replicas,
+        metadata: {
+            name: inputs.appName,
+            labels: labels,
+            namespace: inputs.namespace,
+        },
+        podMetadata: {
+            name: inputs.appName,
+            labels: labels,
+        },
+    });
+
+    if (inputs.nodegroup) {
+        deployment.scheduling.attract(
+            cdk8s_plus_22_lib.Node.labeled(
+                cdk8s_plus_22_lib.NodeLabelQuery.is('instance', inputs.nodegroup || inputs.instance)
+            )
+        );
+    }
+
+    // This line will set the selector for the deployment to "app: <app_name>" to be static and not dynamic.
+    // If it is dynamic, it will be a conflict with kubernetes immutability for deployments, and will block
+    // the deployment from being deployed
+    deployment.select(cdk8s_plus_22_lib.LabelSelector.of({ labels: { app: inputs.appName } }));
+
+    // Return the manifest object
+    return app;
+}
+
 ;// CONCATENATED MODULE: ./src/strategy.js
+
 
 
 
@@ -35371,6 +35437,7 @@ function createCronJob(app, inputs) {
 const services = {
     webservice: createWebservice,
     cronjob: createCronJob,
+    worker: createWorker,
 };
 
 /**
