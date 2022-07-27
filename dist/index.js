@@ -35049,7 +35049,7 @@ function toJson_ExternalSecretSpecData(obj) {
  * @returns {object} The secret source for the docker container
  */
 function createSecrets(chart, inputs) {
-    if (!inputs.secretsmanager && !inputs.clusterName) {
+    if (!inputs.secretsmanager || !inputs.clusterName) {
         return {};
     }
 
