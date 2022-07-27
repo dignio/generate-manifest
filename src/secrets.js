@@ -9,7 +9,7 @@ import * as secrets from '../imports/external-secrets.js';
  * @returns {object} The secret source for the docker container
  */
 export default function createSecrets(chart, inputs) {
-    if (!inputs.secretsmanager && !inputs.clusterName) {
+    if (!inputs.secretsmanager || !inputs.clusterName) {
         return {};
     }
 
