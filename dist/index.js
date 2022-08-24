@@ -35372,6 +35372,11 @@ function createCronJob(app, inputs) {
 
 /**
  * This function will create a worker manifest.
+ * What this means is that this service should be used for applications that do not
+ * need an ingress connected to them. I.e. a service that is only running standalone in the background.
+ * One use case for this is i.e. you have a service that generate reports based on data it fetches from
+ * a database, handles it, and publishes it somewhere.
+ * TL;DR: This is not a service that needs access from the Internet. Such as an API.
  *
  * @param {object} app the app created by the main.js file
  * @param {object} inputs the inputs coming from the github action
