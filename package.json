@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@actions/core": "^1.8.2",
-    "cdk8s": "^2.3.11",
+    "cdk8s": "^2.6.3",
     "cdk8s-plus-22": "^2.0.0-rc.2",
     "constructs": "^10.1.23"
   },
